@@ -23,6 +23,10 @@
 #include <frc2/command/FunctionalCommand.h>
 #include <frc2/command/PrintCommand.h>
 #include <pathplanner/lib/auto/BaseAutoBuilder.h>
+#include <PID.h>
+
+// Constants
+const int currentLimit = 50;
 
 using namespace pathplanner;
 
@@ -47,13 +51,13 @@ class Robot : public frc::TimedRobot {
   rev::CANSparkMax m_leftFollowMotor2{leftFollowDeviceID2, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightFollowMotor{rightFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightFollowMotor2{rightFollowDeviceID2, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_intake1{11, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_intake2{12, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_wrist{11, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_intakeRollers{12, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_arm0{2, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_arm1{10, rev::CANSparkMax::MotorType::kBrushless};  
   frc::DoubleSolenoid m_solenoidDouble{1, frc::PneumaticsModuleType::REVPH, 0,1};
   
-
+  PID pidController{0.5, 1.0, 1.0};
 
   /**
    * In RobotInit() below, we will configure m_leftFollowMotor and m_rightFollowMotor to follow 
@@ -90,21 +94,30 @@ private:
     m_rightFollowMotor.RestoreFactoryDefaults();
     m_leftFollowMotor2.RestoreFactoryDefaults();
     m_rightFollowMotor2.RestoreFactoryDefaults();
-    m_intake1.RestoreFactoryDefaults();
-    m_intake2.RestoreFactoryDefaults();
+    m_wrist.RestoreFactoryDefaults();
+    m_intakeRollers.RestoreFactoryDefaults();
     m_arm0.RestoreFactoryDefaults();
     m_arm1.RestoreFactoryDefaults();
     m_leftLeadMotor.SetInverted(1);
     m_leftFollowMotor2.SetInverted(1);
     m_leftFollowMotor.SetInverted(1);
-    double rampRate = 0.4;
+    /*double rampRate = 0.4;
     m_leftLeadMotor.SetOpenLoopRampRate(rampRate);
     m_rightLeadMotor.SetOpenLoopRampRate(rampRate);
     m_leftFollowMotor.SetOpenLoopRampRate(rampRate);
     m_rightFollowMotor.SetOpenLoopRampRate(rampRate);
     m_leftFollowMotor2.SetOpenLoopRampRate(rampRate);
-    m_rightFollowMotor2.SetOpenLoopRampRate(rampRate);
-    
+    m_rightFollowMotor2.SetOpenLoopRampRate(rampRate);*/
+
+
+    // set to 50 amps
+    m_leftLeadMotor.SetSmartCurrentLimit(currentLimit);
+    m_leftFollowMotor.SetSmartCurrentLimit(currentLimit);
+    m_leftFollowMotor2.SetSmartCurrentLimit(currentLimit);
+
+    m_rightLeadMotor.SetSmartCurrentLimit(currentLimit);
+    m_rightFollowMotor.SetSmartCurrentLimit(currentLimit);
+    m_rightFollowMotor2.SetSmartCurrentLimit(currentLimit);
     
     //m_intake2.SetInverted(0);
     //m_intake1.SetInverted(0);
@@ -121,6 +134,10 @@ private:
     m_rightFollowMotor.Follow(m_rightLeadMotor);
     m_leftFollowMotor2.Follow(m_leftLeadMotor);
     m_rightFollowMotor2.Follow(m_rightLeadMotor);
+
+    pidController.setSatLimit(1.0);
+    pidController.setMax(1);
+    pidController.setFeedForward(0,0);
   }
 
   void AutonomousPeriodic(){
@@ -155,23 +172,35 @@ private:
       m_solenoidDouble.Toggle();
     }
 
-  if (m_driver.GetRightBumper())  //Intake 
-  {
-    m_intake1.Set(.4);
-    m_intake2.Set(-0.4);
-  } 
-  else if (m_driver.GetLeftBumper())//intake
-   {
-   m_intake1.Set(-.4);
-   m_intake2.Set(.4);
-   }
-  else  //Intake Reset
-  {
-  m_intake1.Set(0);
-     m_intake2.Set(0);
- }
-  m_arm0.Set(m_operator.GetRightY()*0.5);
-  m_arm1.Set(-m_operator.GetRightY()*0.5);
+    // Intake config for wrist
+    if (m_operator.GetRightBumper()) 
+    {
+      m_wrist.Set(.4);
+    } 
+    else if (m_operator.GetLeftBumper())
+    {
+      m_wrist.Set(-.4);
+    }
+    else
+    {
+      m_wrist.Set(0);
+    }
+
+    // Intake config
+    // Y picks up cones, B picks up cubes (change)
+    if (m_operator.GetYButton())
+      m_intakeRollers.Set(.4);
+    else if (m_operator.GetBButton())
+      m_intakeRollers.Set(-.4);
+    else
+      m_intakeRollers.Set(0);
+    
+    // arm movement
+    // is right joystick up and down
+    m_arm0.Set(m_operator.GetRightY()*0.5);
+    m_arm1.Set(-m_operator.GetRightY()*0.5);
+
+
   }
 };
  
