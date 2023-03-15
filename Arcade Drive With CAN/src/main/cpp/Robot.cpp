@@ -17,6 +17,14 @@
 #include <frc/PneumaticHub.h>
 #include <frc/TimedRobot.h>
 #define PH_CAN_ID 1
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/PathPoint.h>
+#include <frc2/command/FunctionalCommand.h>
+#include <frc2/command/PrintCommand.h>
+#include <pathplanner/lib/auto/BaseAutoBuilder.h>
+
+using namespace pathplanner;
 
 class Robot : public frc::TimedRobot {
   /**
@@ -113,6 +121,10 @@ private:
     m_rightFollowMotor.Follow(m_rightLeadMotor);
     m_leftFollowMotor2.Follow(m_leftLeadMotor);
     m_rightFollowMotor2.Follow(m_rightLeadMotor);
+  }
+
+  void AutonomousPeriodic(){
+    
   }
 
   void TeleopPeriodic() {
