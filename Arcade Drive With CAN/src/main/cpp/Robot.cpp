@@ -11,6 +11,7 @@
 #include "rev/CANSparkMax.h"
 #include "frc/Solenoid.h"
 #include "frc/Compressor.h"
+#include "subsystems/ArcadeDrive.cpp"
 #include <frc/smartdashboard/SmartDashboard.h>
 #pragma once
 #include <frc/DoubleSolenoid.h>
@@ -33,13 +34,8 @@ class Robot : public frc::TimedRobot {
    * The example below initializes four brushless motors with CAN IDs 1, 2, 3 and 4. Change
    * these parameters to match your setup
    */
-  static const int leftLeadDeviceID = 6, leftFollowDeviceID = 5, leftFollowDeviceID2= 4, rightLeadDeviceID = 9, rightFollowDeviceID = 8, rightFollowDeviceID2 = 7;
-  rev::CANSparkMax m_leftLeadMotor{leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightLeadMotor{rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftFollowMotor{leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftFollowMotor2{leftFollowDeviceID2, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFollowMotor{rightFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFollowMotor2{rightFollowDeviceID2, rev::CANSparkMax::MotorType::kBrushless};
+  ArcadeDrive driveTrain;
+  // one motor for wrist one motor for rollers
   rev::CANSparkMax m_intake1{2, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_intake2{10, rev::CANSparkMax::MotorType::kBrushless};
 // frc::Compressor m_ph{1, frc::PneumaticsModuleType::REVPH};
@@ -54,9 +50,8 @@ class Robot : public frc::TimedRobot {
    * Because of this, we only need to pass the lead motors to m_robotDrive. Whatever commands are 
    * sent to them will automatically be copied by the follower motors
    */
-  frc::DifferentialDrive m_robotDrive{m_leftLeadMotor, m_rightLeadMotor};
 
- frc::XboxController m_driver{0};
+  frc::XboxController m_driver{0};
   
 
 
@@ -74,17 +69,9 @@ private:
      * in the SPARK MAX to their factory default state. If no argument is passed, these
      * parameters will not persist between power cycles
      */
-    m_leftLeadMotor.RestoreFactoryDefaults();
-    m_rightLeadMotor.RestoreFactoryDefaults();
-    m_leftFollowMotor.RestoreFactoryDefaults();
-    m_rightFollowMotor.RestoreFactoryDefaults();
-    m_leftFollowMotor2.RestoreFactoryDefaults();
-    m_rightFollowMotor2.RestoreFactoryDefaults();
+    driveTrain.initialize();
     m_intake1.RestoreFactoryDefaults();
     m_intake2.RestoreFactoryDefaults();
-    m_leftLeadMotor.SetInverted(1);
-    m_leftFollowMotor2.SetInverted(1);
-    m_leftFollowMotor.SetInverted(1);
     //m_intake2.SetInverted(0);
     //m_intake1.SetInverted(0);
     m_solenoidDouble.Set(frc::DoubleSolenoid::Value::kReverse);
@@ -96,10 +83,6 @@ private:
      * This is shown in the example below, where one motor on each side of our drive train is
      * configured to follow a lead motor.
      */
-    m_leftFollowMotor.Follow(m_leftLeadMotor);
-    m_rightFollowMotor.Follow(m_rightLeadMotor);
-    m_leftFollowMotor2.Follow(m_leftLeadMotor);
-    m_rightFollowMotor2.Follow(m_rightLeadMotor);
     //m_intake2.Follow(m_intake1);
   }
 
@@ -126,26 +109,28 @@ private:
    
     // Drive with arcade style
     
-    m_robotDrive.ArcadeDrive(-m_driver.GetLeftY(), -m_driver.GetRightX());
+    driveTrain.arcadeDrive(-m_driver.GetLeftY(), -m_driver.GetRightX());
+
     if (m_driver.GetAButtonPressed()) {
       m_solenoidDouble.Toggle();
     }
 
-  if (m_driver.GetRightBumper())
-  {
-    m_intake1.Set(.4);
-    m_intake2.Set(-0.4);
-  } 
-  else if (m_driver.GetLeftBumper())
-   {
-   m_intake1.Set(-.4);
-   m_intake2.Set(.4);
-   }
-  else 
-  {
-  m_intake1.Set(0);
-     m_intake2.Set(0);
- }
+    if (m_driver.GetRightBumper())
+    {
+      // which one is wrist and which is motor??
+      m_intake1.Set(.4);
+      m_intake2.Set(-0.4);
+    } 
+    else if (m_driver.GetLeftBumper())
+    {
+    m_intake1.Set(-.4);
+    m_intake2.Set(.4);
+    }
+    else 
+    {
+    m_intake1.Set(0);
+      m_intake2.Set(0);
+    }
 
   }
 };
