@@ -11,7 +11,7 @@
 #include "rev/CANSparkMax.h"
 #include "frc/Solenoid.h"
 #include "frc/Compressor.h"
-#include "subsystems/ArcadeDrive.cpp"
+#include "subsystems/TankDrive.cpp"
 #include "subsystems/Intake.cpp"
 #include <frc/smartdashboard/SmartDashboard.h>
 #pragma once
@@ -47,7 +47,7 @@ class Robot : public frc::TimedRobot {
    * these parameters to match your setup
    */
 
-  ArcadeDrive driveTrain;
+  TankDrive driveTrain;
   Intake intake;
 // frc::Compressor m_ph{1, frc::PneumaticsModuleType::REVPH};
   
@@ -134,7 +134,7 @@ private:
    
     // Drive with arcade style
 
-	  driveTrain.arcadeDrive(-m_driver.GetLeftY(), -m_driver.GetRightX());
+	  driveTrain.tankDrive(-m_driver.GetLeftY(), -m_driver.GetRightX());
     if (m_driver.GetAButtonPressed()) { //ball shifter button
       m_solenoidDouble.Toggle();
     }

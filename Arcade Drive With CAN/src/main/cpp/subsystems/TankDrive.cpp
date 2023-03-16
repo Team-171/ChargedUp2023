@@ -1,8 +1,13 @@
 #include <frc/drive/DifferentialDrive.h>
 #include "rev/CANSparkMax.h"
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/SubsystemBase.h>
 
-class ArcadeDrive
+class TankDrive : public frc2::SubsystemBase
 {
+    // Constants
+    const int currentLimit = 50;
+
     // make the motors with their CAN sparks and ports
     static const int leftLeadDeviceID = 6, leftFollowDeviceID = 5, leftFollowDeviceID2= 4, rightLeadDeviceID = 9, rightFollowDeviceID = 8, rightFollowDeviceID2 = 7;
     rev::CANSparkMax m_leftLeadMotor{leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -18,7 +23,7 @@ class ArcadeDrive
     public:
     
     // Default constructor
-    ArcadeDrive(){}
+    TankDrive(){}
 
     void initialize()
     {
@@ -41,11 +46,20 @@ class ArcadeDrive
         m_rightFollowMotor.Follow(m_rightLeadMotor);
         m_leftFollowMotor2.Follow(m_leftLeadMotor);
         m_rightFollowMotor2.Follow(m_rightLeadMotor);
+
+        // set to 50 amps
+        m_leftLeadMotor.SetSmartCurrentLimit(currentLimit);
+        m_leftFollowMotor.SetSmartCurrentLimit(currentLimit);
+        m_leftFollowMotor2.SetSmartCurrentLimit(currentLimit);
+
+        m_rightLeadMotor.SetSmartCurrentLimit(currentLimit);
+        m_rightFollowMotor.SetSmartCurrentLimit(currentLimit);
+        m_rightFollowMotor2.SetSmartCurrentLimit(currentLimit);
     }
     
 
     // maybe limit to a max speed that way we can try to conserve power?
-    void arcadeDrive(double leftJoystickY, double rightJoystickX)
+    void tankDrive(double leftJoystickY, double rightJoystickX)
     {
         // drive the robot using arcade drive and the Xbox joystick values
         // left joystick is forward/backward and right joystick is right/left turning
