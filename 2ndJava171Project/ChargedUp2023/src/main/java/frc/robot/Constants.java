@@ -24,4 +24,26 @@ public final class Constants {
 
     public static final int driveMotorsCurrentLimit = 50;
   }
+
+  public static class WristConstants {
+    public static final int wristMotorID = 3;
+    public static final double wristSpeed = 0.5;
+    public static final String forwardButton = "RB";
+    public static final String backwardButton = "LB";
+  }
+
+  public static class RollerConstants {
+    public static final int rollerMotorID = 1;
+  }
+  
+  public static class OperatorConstants {
+    public static final int kOperatorControllerPort = 1;
+    public static final int operatorLeftBumper = 5;
+    public static final int operatorRightBumper = 6;
+  }
+  
+  public static class ArmConstants {
+    public static final int armMotorID = 2;
+    public static final int armMotorID2 = 10;
+  }
 }
