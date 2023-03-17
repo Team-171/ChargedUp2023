@@ -11,24 +11,26 @@
 #include "rev/CANSparkMax.h"
 #include "frc/Solenoid.h"
 #include "frc/Compressor.h"
+#include "subsystems/TankDrive.cpp"
+#include "subsystems/Intake.cpp"
 #include <frc/smartdashboard/SmartDashboard.h>
 #pragma once
 #include <frc/DoubleSolenoid.h>
 #include <frc/PneumaticHub.h>
 #include <frc/TimedRobot.h>
 #define PH_CAN_ID 1
-#include <pathplanner/lib/PathPlannerTrajectory.h>
-#include <pathplanner/lib/PathPlanner.h>
-#include <pathplanner/lib/PathPoint.h>
+//#include <pathplanner/lib/PathPlannerTrajectory.h>
+//#include <pathplanner/lib/PathPlanner.h>
+//#include <pathplanner/lib/PathPoint.h>
 #include <frc2/command/FunctionalCommand.h>
 #include <frc2/command/PrintCommand.h>
-#include <pathplanner/lib/auto/BaseAutoBuilder.h>
+//#include <pathplanner/lib/auto/BaseAutoBuilder.h>
 #include <PID.h>
 
-// Constants
-const int currentLimit = 50;
+//using namespace pathplanner;
 
-using namespace pathplanner;
+const double wristVelocity = .4;
+const double intakeRollerVelocity = .4;
 
 class Robot : public frc::TimedRobot {
   /**
@@ -44,17 +46,14 @@ class Robot : public frc::TimedRobot {
    * The example below initializes four brushless motors with CAN IDs 1, 2, 3 and 4. Change
    * these parameters to match your setup
    */
-  static const int leftLeadDeviceID = 6, leftFollowDeviceID = 5, leftFollowDeviceID2= 4, rightLeadDeviceID = 9, rightFollowDeviceID = 8, rightFollowDeviceID2 = 7;
-  rev::CANSparkMax m_leftLeadMotor{leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};            
-  rev::CANSparkMax m_rightLeadMotor{rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftFollowMotor{leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftFollowMotor2{leftFollowDeviceID2, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFollowMotor{rightFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFollowMotor2{rightFollowDeviceID2, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_wrist{11, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_intakeRollers{12, rev::CANSparkMax::MotorType::kBrushless};
+
+  TankDrive driveTrain;
+  Intake intake;
+// frc::Compressor m_ph{1, frc::PneumaticsModuleType::REVPH};
+  
   rev::CANSparkMax m_arm0{2, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_arm1{10, rev::CANSparkMax::MotorType::kBrushless};  
+
   frc::DoubleSolenoid m_solenoidDouble{1, frc::PneumaticsModuleType::REVPH, 0,1};
   
   PID pidController{0.5, 1.0, 1.0};
@@ -66,12 +65,10 @@ class Robot : public frc::TimedRobot {
    * Because of this, we only need to pass the lead motors to m_robotDrive. Whatever commands are 
    * sent to them will automatically be copied by the follower motors
    */
-  frc::DifferentialDrive m_robotDrive{m_leftLeadMotor, m_rightLeadMotor};
 
  frc::XboxController m_driver{0}; //defines driver controller type and port
  frc::XboxController m_operator{1}; //Defines operator controller and port
 
-  
 
 
 private:
@@ -88,39 +85,13 @@ private:
      * in the SPARK MAX to their factory default state. If no argument is passed, these
      * parameters will not persist between power cycles
      */
-    m_leftLeadMotor.RestoreFactoryDefaults();
-    m_rightLeadMotor.RestoreFactoryDefaults();
-    m_leftFollowMotor.RestoreFactoryDefaults();
-    m_rightFollowMotor.RestoreFactoryDefaults();
-    m_leftFollowMotor2.RestoreFactoryDefaults();
-    m_rightFollowMotor2.RestoreFactoryDefaults();
-    m_wrist.RestoreFactoryDefaults();
-    m_intakeRollers.RestoreFactoryDefaults();
+
+    driveTrain.initialize();
+    intake.initialize();
     m_arm0.RestoreFactoryDefaults();
     m_arm1.RestoreFactoryDefaults();
-    m_leftLeadMotor.SetInverted(1);
-    m_leftFollowMotor2.SetInverted(1);
-    m_leftFollowMotor.SetInverted(1);
-    /*double rampRate = 0.4;
-    m_leftLeadMotor.SetOpenLoopRampRate(rampRate);
-    m_rightLeadMotor.SetOpenLoopRampRate(rampRate);
-    m_leftFollowMotor.SetOpenLoopRampRate(rampRate);
-    m_rightFollowMotor.SetOpenLoopRampRate(rampRate);
-    m_leftFollowMotor2.SetOpenLoopRampRate(rampRate);
-    m_rightFollowMotor2.SetOpenLoopRampRate(rampRate);*/
 
 
-    // set to 50 amps
-    m_leftLeadMotor.SetSmartCurrentLimit(currentLimit);
-    m_leftFollowMotor.SetSmartCurrentLimit(currentLimit);
-    m_leftFollowMotor2.SetSmartCurrentLimit(currentLimit);
-
-    m_rightLeadMotor.SetSmartCurrentLimit(currentLimit);
-    m_rightFollowMotor.SetSmartCurrentLimit(currentLimit);
-    m_rightFollowMotor2.SetSmartCurrentLimit(currentLimit);
-    
-    //m_intake2.SetInverted(0);
-    //m_intake1.SetInverted(0);
     m_solenoidDouble.Set(frc::DoubleSolenoid::Value::kReverse); //Default shifters to low gear
     /**
      * In CAN mode, one SPARK MAX can be configured to follow another. This is done by calling
@@ -130,10 +101,6 @@ private:
      * This is shown in the example below, where one motor on each side of our drive train is
      * configured to follow a lead motor.
      */
-    m_leftFollowMotor.Follow(m_leftLeadMotor);
-    m_rightFollowMotor.Follow(m_rightLeadMotor);
-    m_leftFollowMotor2.Follow(m_leftLeadMotor);
-    m_rightFollowMotor2.Follow(m_rightLeadMotor);
 
     pidController.setSatLimit(1.0);
     pidController.setMax(1);
@@ -147,8 +114,8 @@ private:
   void TeleopPeriodic() {
 
     // Get values from Shuffleboard
-    double minPressure =50;
-    double maxPressure =110;
+    double minPressure = 50;
+    double maxPressure = 110;
 
     /**
      * Enable the compressor with analog pressure sensor control.
@@ -166,8 +133,8 @@ private:
 
    
     // Drive with arcade style
-    
-    m_robotDrive.ArcadeDrive(-m_driver.GetLeftY(), -m_driver.GetRightX()); // Arcade drive of base
+
+	  driveTrain.tankDrive(-m_driver.GetLeftY(), -m_driver.GetRightX());
     if (m_driver.GetAButtonPressed()) { //ball shifter button
       m_solenoidDouble.Toggle();
     }
@@ -175,32 +142,30 @@ private:
     // Intake config for wrist
     if (m_operator.GetRightBumper()) 
     {
-      m_wrist.Set(.4);
+      intake.setWristMotor(wristVelocity);
     } 
     else if (m_operator.GetLeftBumper())
     {
-      m_wrist.Set(-.4);
+      intake.setWristMotor(-wristVelocity);
     }
     else
     {
-      m_wrist.Set(0);
+      intake.setWristMotor(0);
     }
 
     // Intake config
-    // Y picks up cones, B picks up cubes (change)
+    // Y picks up cones, B picks up cubes (change?)
     if (m_operator.GetYButton())
-      m_intakeRollers.Set(.4);
+      intake.setIntakeRollersMotor(intakeRollerVelocity);
     else if (m_operator.GetBButton())
-      m_intakeRollers.Set(-.4);
+      intake.setIntakeRollersMotor(intakeRollerVelocity);
     else
-      m_intakeRollers.Set(0);
+      intake.setIntakeRollersMotor(0);
     
     // arm movement
     // is right joystick up and down
     m_arm0.Set(m_operator.GetRightY()*0.5);
     m_arm1.Set(-m_operator.GetRightY()*0.5);
-
-
   }
 };
  
