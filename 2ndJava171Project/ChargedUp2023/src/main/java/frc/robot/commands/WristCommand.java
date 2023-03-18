@@ -4,26 +4,34 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants.WristConstants;
-import frc.robot.subsystems.WristSubsystem;
-
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.WristSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class WristCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
-  private String buttonPressed;
+  private DoubleSupplier speed;
+  boolean aButton;
+  boolean bButton;
+  boolean xButton;
+  boolean yButton;
+
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public WristCommand(WristSubsystem subsystem, String buttonPressed) {
+  public WristCommand(WristSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton) {
     wristSubsystem = subsystem;
-    this.buttonPressed = buttonPressed;
+    this.speed = speed;
+    this.aButton = aButton;
+    this.bButton = bButton;
+    this.xButton = xButton;
+    this.yButton = yButton;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -35,18 +43,12 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (buttonPressed == WristConstants.forwardButton) {
-      wristSubsystem.moveWristForward();
-    }
-    if (buttonPressed == WristConstants.backwardButton) {
-      wristSubsystem.moveWristBackward();
-    }
+    wristSubsystem.moveWrist(speed.getAsDouble(), aButton, bButton, xButton, yButton);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    wristSubsystem.stopWrist();
   }
 
   // Returns true when the command should end.

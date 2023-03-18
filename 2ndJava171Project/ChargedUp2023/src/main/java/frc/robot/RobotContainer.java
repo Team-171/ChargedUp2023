@@ -4,14 +4,19 @@
 
 package frc.robot;
 
-import frc.robot.Constants.*;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.WristConstants;
+import frc.robot.commands.ArmCommand;
+import frc.robot.commands.IntakeRollersCommand;
+import frc.robot.commands.TankDriveCommand;
+import frc.robot.commands.WristCommand;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.IntakeRollersSubsystem;
+import frc.robot.subsystems.TankDriveSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,9 +54,12 @@ public class RobotContainer {
       new IntakeRollersCommand(rollersSubsystem, () -> operatorController.getRawAxis(2) - operatorController.getRawAxis(3)));
     
     armSubsystem.setDefaultCommand(
-      new ArmCommand(armSubsystem, () -> operatorController.getLeftY()));
-
-      // Configure the trigger bindings
+      new ArmCommand(armSubsystem, () -> operatorController.getLeftY(), operatorController.getHID().getAButtonPressed(), operatorController.getHID().getBButtonPressed(), operatorController.getHID().getXButtonPressed(), operatorController.getHID().getYButtonPressed()));
+      
+    wristSubsystem.setDefaultCommand(
+      new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false));
+      
+    // Configure the trigger bindings
     configureBindings();
   }
 
@@ -66,8 +74,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operatorController.button(OperatorConstants.operatorRightBumper).whileTrue(new WristCommand(wristSubsystem, WristConstants.forwardButton));
-    operatorController.button(OperatorConstants.operatorLeftBumper).whileTrue(new WristCommand(wristSubsystem, WristConstants.backwardButton));
+    operatorController.a().whileTrue(new ArmCommand(armSubsystem, () -> 0, true, false, false, false));
+    operatorController.b().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, true, false, false));
+    operatorController.x().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, true, false));
+    operatorController.y().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, true));
   }
 
   

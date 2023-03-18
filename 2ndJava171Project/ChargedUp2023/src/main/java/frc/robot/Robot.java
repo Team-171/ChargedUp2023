@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -17,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
+  private SendableChooser<String> autoChooser;
+
   private RobotContainer m_robotContainer;
 
   /**
@@ -28,6 +33,11 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    autoChooser = new SendableChooser<>();
+    autoChooser.addOption("Auto 1", "Auto 1");
+    autoChooser.setDefaultOption("Auto 2 (Default)", "Auto 2");
+    SmartDashboard.putData(autoChooser);
   }
 
   /**

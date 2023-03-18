@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.ArmSubsystem;
@@ -16,14 +17,24 @@ public class ArmCommand extends CommandBase {
   private final ArmSubsystem armSubsystem;
 
   DoubleSupplier speed;
+  boolean aButton;
+  boolean bButton;
+  boolean xButton;
+  boolean yButton;
+
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ArmCommand(ArmSubsystem subsystem, DoubleSupplier speed) {
+  public ArmCommand(ArmSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton) {
     armSubsystem = subsystem;
     this.speed = speed;
+    this.aButton = aButton;
+    this.bButton = bButton;
+    this.xButton = xButton;
+    this.yButton = yButton;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -35,7 +46,10 @@ public class ArmCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveArm(speed.getAsDouble());
+    armSubsystem.moveArm(speed.getAsDouble(), aButton, bButton, xButton, yButton);
+
+    SmartDashboard.putNumber("Arm Encoder Distance: ", armSubsystem.getArmEncoder());
+    SmartDashboard.putNumber("Wrist Encoder Distance: ", armSubsystem.getWristEncoder());
   }
 
   // Called once the command ends or is interrupted.
