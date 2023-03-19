@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -24,12 +24,6 @@ public class WristSubsystem extends SubsystemBase {
 
   PIDController pid;
   double setpoint;
-  double aButton;
-  double bButton;
-  double xButton;
-  double yButton;
-  double reset;
-
   double setDistance;
   double currentDistance;
 
@@ -39,22 +33,16 @@ public class WristSubsystem extends SubsystemBase {
 
     wristMotor.restoreFactoryDefaults();
 
-    wristEncoder = new DutyCycleEncoder(1);
+    wristEncoder = new DutyCycleEncoder(WristConstants.wristEncoderChannel);
 
-    pid = new PIDController(2, 0.05, 0.1);
-
-    aButton = 0.656;
-    bButton = -0.9;
-    xButton = 0.464;
-    yButton = -0.44;
-    reset = 0.471;
+    pid = new PIDController(WristConstants.wristPIDkp, WristConstants.wristPIDki, WristConstants.wristPIDkd);
 
     setDistance = 0;
     currentDistance = wristEncoder.getDistance();
   }
 
   public void moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset){
-    if(Math.abs(speed) < .1) {
+    if(Math.abs(speed) < WristConstants.wristDeadZone) {
       speed = 0;
     }
 
@@ -62,62 +50,40 @@ public class WristSubsystem extends SubsystemBase {
     setpoint = speed + currentDistance;
 
     if(aButton){
-      setpoint = this.aButton;
+      setpoint = WristConstants.aButton;
       currentDistance = wristEncoder.getDistance();
     }else if(bButton){
-      setpoint = this.bButton;
+      setpoint = WristConstants.bButton;
       currentDistance = wristEncoder.getDistance();
     }else if(xButton){
-      setpoint = this.xButton;
+      setpoint = WristConstants.xButton;
       currentDistance = wristEncoder.getDistance();
     }else if(yButton){
-      setpoint = this.yButton;
+      setpoint = WristConstants.yButton;
       currentDistance = wristEncoder.getDistance();
     }else if(reset){
-      setpoint = this.reset;
+      setpoint = WristConstants.reset;
       currentDistance = wristEncoder.getDistance();
     }  
 
-    setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -0.75, 0.75);
+    setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
     if(speed != 0){currentDistance = wristEncoder.getDistance();}
 
-    // if(wristEncoder.getDistance() > -1.5 && wristEncoder.getDistance() < 1.45 ){
-    //   wristMotor.set(setDistance);
-    // }else{
-    //   setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), 0.2), -0.5, 0.5);
-    //   wristMotor.set(setDistance);
-    // }
-
-    if(wristEncoder.getDistance() > -1.5 && wristEncoder.getDistance() < 1.45 ){
+    if(wristEncoder.getDistance() > WristConstants.wristLowHardStop && wristEncoder.getDistance() < WristConstants.wristHighHardStop){
       wristMotor.set(setDistance);
     }else{
-      setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), 0.2), -0.25, 0.25);
+      setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), WristConstants.wristRoughMiddle), -WristConstants.wristReturnSpeed, WristConstants.wristReturnSpeed);
       wristMotor.set(setDistance);
     }
 
-    SmartDashboard.putNumber("Wrist PID Going To: ", setDistance);
+    SmartDashboard.putNumber("Wrist PID Output: ", setDistance);
     SmartDashboard.putNumber("Wrist Speed: ", wristMotor.get());
-    SmartDashboard.putNumber("Wrist Setpoint: ", setpoint);
-    SmartDashboard.putNumber("Wrist Current Distance: ", currentDistance);
+    SmartDashboard.putNumber("Wrist Hold Distance: ", currentDistance);
   }
 
   public double getWristEncoder(){
     return wristEncoder.getDistance();
   }
-
-  // public void moveWristForward(){
-  //     // if potentiameter
-  //     wristMotor.set(WristConstants.wristSpeed);
-  // }
-
-  // public void moveWristBackward(){
-  //   // if potentiameter
-  //   wristMotor.set(-WristConstants.wristSpeed);
-  // }
-
-  // public void stopWrist(){
-  //   wristMotor.set(0);
-  // }
 
   @Override
   public void periodic() {

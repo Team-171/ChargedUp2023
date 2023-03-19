@@ -4,15 +4,10 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.*;
 import frc.robot.Constants.RollerConstants;
 import edu.wpi.first.math.controller.PIDController;
-
-import javax.management.relation.RoleResult;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -34,13 +29,13 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     rollersMotor.restoreFactoryDefaults();
     rollersMotor.getEncoder().setPosition(0);
 
-    pid = new PIDController(0.025, 0, 0);
+    pid = new PIDController(RollerConstants.rollerPIDkp, RollerConstants.rollerPIDki, RollerConstants.rollerPIDkd);
 
     currentDistance = 0;
   }
 
   public void moveRoller(double speed){
-    if(Math.abs(speed) < .1) {
+    if(Math.abs(speed) < RollerConstants.rollerDeadZone) {
       speed = 0;
     }
 
@@ -55,7 +50,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
       rollersMotor.set(speed);
       rollersMotor.getEncoder().setPosition(0);
     }else{
-      rollersMotor.set(MathUtil.clamp(pid.calculate(rollersMotor.getEncoder().getPosition(), 0), -1, 1));
+      rollersMotor.set(MathUtil.clamp(pid.calculate(rollersMotor.getEncoder().getPosition(), 0), -RollerConstants.rollerSpeed, RollerConstants.rollerSpeed));
     }
   }
 

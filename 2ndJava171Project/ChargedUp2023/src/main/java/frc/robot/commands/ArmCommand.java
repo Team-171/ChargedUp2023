@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.WristSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ArmCommand extends CommandBase {
@@ -51,7 +50,7 @@ public class ArmCommand extends CommandBase {
   public void execute() {
     armSubsystem.moveArm(speed.getAsDouble(), aButton, bButton, xButton, yButton, reset);
 
-    SmartDashboard.putNumber("Arm Encoder Distance: ", armSubsystem.getArmEncoder());
+    SmartDashboard.putNumber("Arm Encoder Absolute Position: ", armSubsystem.getArmEncoder());
   }
 
   // Called once the command ends or is interrupted.

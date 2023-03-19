@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import org.opencv.aruco.EstimateParameters;
-import org.opencv.core.Mat;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -26,12 +23,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   PIDController pid;
   double setpoint;
-  double aButton;
-  double bButton;
-  double xButton;
-  double yButton;
-  double reset;
-
   double setDistance;
   double currentDistance;
 
@@ -45,15 +36,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     armMotor.setInverted(true);
 
-    armEncoder = new DutyCycleEncoder(0);
+    armEncoder = new DutyCycleEncoder(ArmConstants.armEncoderChannel);
 
-    pid = new PIDController(3.5, 0.2, 0.5);
-
-    aButton = 0.05;
-    bButton = 0.4;
-    xButton = 0.057;
-    yButton = 0.38;
-    reset = 0.2;
+    pid = new PIDController(ArmConstants.armPIDkp, ArmConstants.armPIDki, ArmConstants.armPIDkd);
 
     setDistance = 0;
     currentDistance = armEncoder.getAbsolutePosition();
@@ -61,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset){
 
-      if(Math.abs(speed) < .1) {
+      if(Math.abs(speed) < ArmConstants.armDeadZone) {
             speed = 0;
       }
 
@@ -69,43 +54,41 @@ public class ArmSubsystem extends SubsystemBase {
       setpoint = speed + currentDistance;
 
       if(aButton){
-        setpoint = this.aButton;
+        setpoint = ArmConstants.aButton;
         currentDistance = armEncoder.getAbsolutePosition();
         aButton = false;
       }else if(bButton){
-        setpoint = this.bButton;
+        setpoint = ArmConstants.bButton;
         currentDistance = armEncoder.getAbsolutePosition();
         bButton = false;
       }else if(xButton){
-        setpoint = this.xButton;
+        setpoint = ArmConstants.xButton;
         currentDistance = armEncoder.getAbsolutePosition();
         xButton = false;
       }else if(yButton){
-        setpoint = this.yButton;
+        setpoint = ArmConstants.yButton;
         currentDistance = armEncoder.getAbsolutePosition();
         yButton = false;
       }else if(reset){
-        setpoint = this.reset;
+        setpoint = ArmConstants.reset;
         currentDistance = armEncoder.getAbsolutePosition();
       }
 
-      setDistance = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), setpoint), -1, 1);
+      setDistance = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), setpoint), -ArmConstants.armSpeed, ArmConstants.armSpeed);
       if(speed != 0){currentDistance = armEncoder.getAbsolutePosition();}
       
-      if(armEncoder.getAbsolutePosition() > 0.03 && armEncoder.getAbsolutePosition() < 0.45 ){
+      if(armEncoder.getAbsolutePosition() > ArmConstants.armLowHardStop && armEncoder.getAbsolutePosition() < ArmConstants.armHighHardStop){
         armMotor.set(setDistance);
         armMotor2.set(setDistance);
       }else{
-        setDistance = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), 0.16), -0.25, 0.25);
+        setDistance = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), ArmConstants.armRoughMiddle), -ArmConstants.armReturnSpeed, ArmConstants.armReturnSpeed);
         armMotor.set(setDistance);
         armMotor2.set(setDistance);
       }
 
-      SmartDashboard.putNumber("PID Going To: ", setDistance);
-      SmartDashboard.putNumber("Arm Speed: ", armMotor.get());
-      SmartDashboard.putNumber("Arm Speed 2: ", armMotor2.get());
-      SmartDashboard.putNumber("Setpoint: ", setpoint);
-      SmartDashboard.putNumber("Current Distance: ", currentDistance);
+      SmartDashboard.putNumber("Arm PID Output:", setDistance);
+      SmartDashboard.putNumber("Both Arm Motor Speed: ", armMotor.get());
+      SmartDashboard.putNumber("Arm Hold Position: ", currentDistance);
   }
 
   public double getArmEncoder(){

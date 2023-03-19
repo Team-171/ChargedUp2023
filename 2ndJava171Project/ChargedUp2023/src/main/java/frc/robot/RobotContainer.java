@@ -7,6 +7,7 @@ package frc.robot;
 import javax.swing.text.StyleContext.SmallAttributeSet;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +15,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -31,6 +33,8 @@ public class RobotContainer {
   private final IntakeRollersSubsystem rollersSubsystem;
   private final ArmSubsystem armSubsystem;
   private final PneumaticSubsystem pneumaticSubsystem;
+
+  //Change to <Command>
   private SendableChooser<String> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -61,10 +65,9 @@ public class RobotContainer {
       
     wristSubsystem.setDefaultCommand(
       new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false));
-
-    // pneumaticSubsystem.setDefaultCommand(
-    //   new PneumaticCommand(pneumaticSubsystem, false));
     
+
+    // Change the objects to Commands
     autoChooser = new SendableChooser<>();
     autoChooser.addOption("Auto 1", "Auto 1");
     autoChooser.setDefaultOption("Auto 2 (Default)", "Auto 2");
