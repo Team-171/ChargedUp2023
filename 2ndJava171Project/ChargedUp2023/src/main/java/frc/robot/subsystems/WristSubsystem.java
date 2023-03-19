@@ -11,13 +11,16 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+
 
 
 public class WristSubsystem extends SubsystemBase {
 
   public static CANSparkMax wristMotor;
+
+  public static DutyCycleEncoder wristEncoder;
 
   PIDController pid;
   double setpoint;
@@ -25,8 +28,10 @@ public class WristSubsystem extends SubsystemBase {
   double bButton;
   double xButton;
   double yButton;
+  double reset;
 
   double setDistance;
+  double currentDistance;
 
   /** Creates a new ExampleSubsystem. */
   public WristSubsystem() {
@@ -34,40 +39,70 @@ public class WristSubsystem extends SubsystemBase {
 
     wristMotor.restoreFactoryDefaults();
 
-    pid = new PIDController(2, 0, 0);
+    wristEncoder = new DutyCycleEncoder(1);
 
-    aButton = 0.1;
-    bButton = 0.2;
-    xButton = 0.25;
-    yButton = 0.30;
+    pid = new PIDController(2, 0.05, 0.1);
+
+    aButton = 0.656;
+    bButton = -0.9;
+    xButton = 0.464;
+    yButton = -0.44;
+    reset = 0.471;
 
     setDistance = 0;
+    currentDistance = wristEncoder.getDistance();
   }
 
-  public void moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton){
+  public void moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset){
     if(Math.abs(speed) < .1) {
       speed = 0;
     }
 
     speed = speed * 0.25;
-    setpoint = speed + ArmSubsystem.wristEncoder.getDistance();
+    setpoint = speed + currentDistance;
 
     if(aButton){
       setpoint = this.aButton;
+      currentDistance = wristEncoder.getDistance();
     }else if(bButton){
       setpoint = this.bButton;
+      currentDistance = wristEncoder.getDistance();
     }else if(xButton){
       setpoint = this.xButton;
+      currentDistance = wristEncoder.getDistance();
     }else if(yButton){
       setpoint = this.yButton;
+      currentDistance = wristEncoder.getDistance();
+    }else if(reset){
+      setpoint = this.reset;
+      currentDistance = wristEncoder.getDistance();
     }  
 
-    setDistance = -MathUtil.clamp(pid.calculate(ArmSubsystem.wristEncoder.getDistance(), setpoint), -0.5, 0.5);
+    setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -0.75, 0.75);
+    if(speed != 0){currentDistance = wristEncoder.getDistance();}
 
-    wristMotor.set(setDistance);
+    // if(wristEncoder.getDistance() > -1.5 && wristEncoder.getDistance() < 1.45 ){
+    //   wristMotor.set(setDistance);
+    // }else{
+    //   setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), 0.2), -0.5, 0.5);
+    //   wristMotor.set(setDistance);
+    // }
 
-    SmartDashboard.putNumber("Wrist PID Going To: ", -MathUtil.clamp(pid.calculate(ArmSubsystem.wristEncoder.getDistance(), setpoint), -0.15, 0.15));
-    SmartDashboard.putNumber("Arm Speed: ", wristMotor.get());
+    if(wristEncoder.getDistance() > -1.5 && wristEncoder.getDistance() < 1.45 ){
+      wristMotor.set(setDistance);
+    }else{
+      setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), 0.2), -0.25, 0.25);
+      wristMotor.set(setDistance);
+    }
+
+    SmartDashboard.putNumber("Wrist PID Going To: ", setDistance);
+    SmartDashboard.putNumber("Wrist Speed: ", wristMotor.get());
+    SmartDashboard.putNumber("Wrist Setpoint: ", setpoint);
+    SmartDashboard.putNumber("Wrist Current Distance: ", currentDistance);
+  }
+
+  public double getWristEncoder(){
+    return wristEncoder.getDistance();
   }
 
   // public void moveWristForward(){

@@ -4,19 +4,19 @@
 
 package frc.robot;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.WristConstants;
-import frc.robot.commands.ArmCommand;
-import frc.robot.commands.IntakeRollersCommand;
-import frc.robot.commands.TankDriveCommand;
-import frc.robot.commands.WristCommand;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.IntakeRollersSubsystem;
-import frc.robot.subsystems.TankDriveSubsystem;
-import frc.robot.subsystems.WristSubsystem;
+import frc.robot.Constants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +30,8 @@ public class RobotContainer {
   private final WristSubsystem wristSubsystem;
   private final IntakeRollersSubsystem rollersSubsystem;
   private final ArmSubsystem armSubsystem;
+  private final PneumaticSubsystem pneumaticSubsystem;
+  private SendableChooser<String> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
@@ -45,20 +47,29 @@ public class RobotContainer {
     wristSubsystem = new WristSubsystem();
     rollersSubsystem = new IntakeRollersSubsystem();
     armSubsystem = new ArmSubsystem();
+    pneumaticSubsystem = new PneumaticSubsystem();
 
     // set the default command so that this will run constantly
     driveSubsystem.setDefaultCommand(
-      new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> driverController.getRightX()));
+      new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX()));
 
     rollersSubsystem.setDefaultCommand(
-      new IntakeRollersCommand(rollersSubsystem, () -> operatorController.getRawAxis(2) - operatorController.getRawAxis(3)));
+      new IntakeRollersCommand(rollersSubsystem, () -> operatorController.getRawAxis(OperatorConstants.rightTrigger) - operatorController.getRawAxis(OperatorConstants.leftTrigger)));
     
     armSubsystem.setDefaultCommand(
-      new ArmCommand(armSubsystem, () -> operatorController.getLeftY(), operatorController.getHID().getAButtonPressed(), operatorController.getHID().getBButtonPressed(), operatorController.getHID().getXButtonPressed(), operatorController.getHID().getYButtonPressed()));
+      new ArmCommand(armSubsystem, () -> operatorController.getLeftY(), false, false, false, false, false));
       
     wristSubsystem.setDefaultCommand(
-      new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false));
-      
+      new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false));
+
+    pneumaticSubsystem.setDefaultCommand(
+      new PneumaticCommand(pneumaticSubsystem, false));
+    
+    autoChooser = new SendableChooser<>();
+    autoChooser.addOption("Auto 1", "Auto 1");
+    autoChooser.setDefaultOption("Auto 2 (Default)", "Auto 2");
+    SmartDashboard.putData(autoChooser);
+    
     // Configure the trigger bindings
     configureBindings();
   }
@@ -74,10 +85,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operatorController.a().whileTrue(new ArmCommand(armSubsystem, () -> 0, true, false, false, false));
-    operatorController.b().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, true, false, false));
-    operatorController.x().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, true, false));
-    operatorController.y().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, true));
+    operatorController.a().whileTrue(new ArmCommand(armSubsystem, () -> 0, true, false, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, true, false, false, false, false));
+    operatorController.b().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, true, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, true, false, false, false));
+    operatorController.x().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, true, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, true, false, false));
+    operatorController.y().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, true, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, true, false));
+  
+    operatorController.leftBumper().and(operatorController.rightBumper()).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, true)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, true));
+    
+    // driverController.rightBumper().onTrue(new PneumaticCommand(pneumaticSubsystem, true));
+    driverController.a().onTrue(new PneumaticCommand2(pneumaticSubsystem, true));
   }
 
   

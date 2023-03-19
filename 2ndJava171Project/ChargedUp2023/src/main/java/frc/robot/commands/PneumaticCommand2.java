@@ -6,36 +6,29 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.*;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PneumaticSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class WristCommand extends CommandBase {
+public class PneumaticCommand2 extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final WristSubsystem wristSubsystem;
-  private DoubleSupplier speed;
-  boolean aButton;
-  boolean bButton;
-  boolean xButton;
-  boolean yButton;
-  boolean reset;
+  private final PneumaticSubsystem pneumaticSubsystem;
+
+  DoubleSupplier speed;
+  boolean enabled;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public WristCommand(WristSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset) {
-    wristSubsystem = subsystem;
-    this.speed = speed;
-    this.aButton = aButton;
-    this.bButton = bButton;
-    this.xButton = xButton;
-    this.yButton = yButton;
-    this.reset = reset;
+  public PneumaticCommand2(PneumaticSubsystem subsystem, boolean enabled) {
+    pneumaticSubsystem = subsystem;
+    this.enabled = enabled;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -48,14 +41,17 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    wristSubsystem.moveWrist(speed.getAsDouble(), aButton, bButton, xButton, yButton, reset);
-
-    SmartDashboard.putNumber("Wrist Encoder Distance: ", wristSubsystem.getWristEncoder());
+    SmartDashboard.putBoolean("Solenoid: ", enabled);
+    if(enabled){
+        pneumaticSubsystem.togglePneumatic();
+        enabled = false;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    enabled = true;
   }
 
   // Returns true when the command should end.

@@ -40,10 +40,20 @@ public final class Constants {
     public static final int kOperatorControllerPort = 1;
     public static final int operatorLeftBumper = 5;
     public static final int operatorRightBumper = 6;
+    public static final int rightTrigger = 2;
+    public static final int leftTrigger = 3;
   }
   
   public static class ArmConstants {
     public static final int armMotorID = 2;
     public static final int armMotorID2 = 10;
+  }
+
+  public static class PneumaticConstants {
+    public static final double minPressure = 40;
+    public static final double maxPressure = 120;
+    public static final int forwardChannel = 0;
+    public static final int reverseChannel = 1;
+    public static final int moduleID = 1; 
   }
 }
