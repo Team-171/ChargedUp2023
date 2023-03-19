@@ -62,8 +62,8 @@ public class RobotContainer {
     wristSubsystem.setDefaultCommand(
       new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false));
 
-    pneumaticSubsystem.setDefaultCommand(
-      new PneumaticCommand(pneumaticSubsystem, false));
+    // pneumaticSubsystem.setDefaultCommand(
+    //   new PneumaticCommand(pneumaticSubsystem, false));
     
     autoChooser = new SendableChooser<>();
     autoChooser.addOption("Auto 1", "Auto 1");
@@ -92,8 +92,7 @@ public class RobotContainer {
   
     operatorController.leftBumper().and(operatorController.rightBumper()).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, true)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, true));
     
-    // driverController.rightBumper().onTrue(new PneumaticCommand(pneumaticSubsystem, true));
-    driverController.a().onTrue(new PneumaticCommand2(pneumaticSubsystem, true));
+    driverController.rightBumper().onTrue(new PneumaticCommand(pneumaticSubsystem));
   }
 
   

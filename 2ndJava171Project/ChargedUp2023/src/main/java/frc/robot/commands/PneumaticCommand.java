@@ -4,24 +4,30 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.*;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PneumaticSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class PneumaticCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PneumaticSubsystem pneumaticSubsystem;
-  
-  boolean enabled;
+
+  DoubleSupplier speed;
+
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PneumaticCommand(PneumaticSubsystem subsystem, boolean enabled) {
+  public PneumaticCommand(PneumaticSubsystem subsystem) {
     pneumaticSubsystem = subsystem;
-    this.enabled = enabled;
+
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -29,17 +35,12 @@ public class PneumaticCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(enabled){
-      pneumaticSubsystem.togglePneumatic();
-      enabled = false;
-    }
-    SmartDashboard.putBoolean("Solenoid: ", enabled);
+    pneumaticSubsystem.togglePneumatic();
   }
 
   // Called once the command ends or is interrupted.
@@ -50,6 +51,6 @@ public class PneumaticCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

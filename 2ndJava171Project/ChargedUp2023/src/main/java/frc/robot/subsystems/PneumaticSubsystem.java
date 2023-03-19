@@ -34,6 +34,7 @@ public class PneumaticSubsystem extends SubsystemBase {
 
   public void togglePneumatic(){
      solenoid.toggle();
+     SmartDashboard.putString("Solenoid: ", solenoid.get().name());
   }
 
   @Override
