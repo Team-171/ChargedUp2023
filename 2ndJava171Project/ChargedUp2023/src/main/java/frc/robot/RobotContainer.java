@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -33,6 +34,8 @@ public class RobotContainer {
   private final IntakeRollersSubsystem rollersSubsystem;
   private final ArmSubsystem armSubsystem;
   private final PneumaticSubsystem pneumaticSubsystem;
+
+  private final Field2d m_field = new Field2d();
 
   //Change to <Command>
   private SendableChooser<String> autoChooser;
@@ -72,6 +75,8 @@ public class RobotContainer {
     autoChooser.addOption("Auto 1", "Auto 1");
     autoChooser.setDefaultOption("Auto 2 (Default)", "Auto 2");
     SmartDashboard.putData(autoChooser);
+    
+    SmartDashboard.putData("Field: ", m_field);
     
     // Configure the trigger bindings
     configureBindings();

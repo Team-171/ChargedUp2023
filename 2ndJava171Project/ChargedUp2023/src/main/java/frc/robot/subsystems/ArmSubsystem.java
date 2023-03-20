@@ -86,7 +86,7 @@ public class ArmSubsystem extends SubsystemBase {
         armMotor2.set(setDistance);
       }
 
-      SmartDashboard.putNumber("Arm PID Output:", setDistance);
+      SmartDashboard.putNumber("Arm PID Output: ", setDistance);
       SmartDashboard.putNumber("Both Arm Motor Speed: ", armMotor.get());
       SmartDashboard.putNumber("Arm Hold Position: ", currentDistance);
   }

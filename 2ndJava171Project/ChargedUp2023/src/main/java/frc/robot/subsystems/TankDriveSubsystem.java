@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -56,6 +57,9 @@ public class TankDriveSubsystem extends SubsystemBase {
     rightFollowMotor2.follow(rightLeadMotor);
 
     roboDrive = new DifferentialDrive(leftLeadMotor, rightLeadMotor);
+
+    SmartDashboard.putNumber("Left Drive Speed: ", leftLeadMotor.get());
+    SmartDashboard.putNumber("Right Drive Speed: ", rightLeadMotor.get());
   }
 
   public void arcadeDrive(double forward, double rotation){
