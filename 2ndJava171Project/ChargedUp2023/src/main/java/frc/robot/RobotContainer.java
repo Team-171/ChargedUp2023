@@ -4,7 +4,18 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.swing.text.StyleContext.SmallAttributeSet;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -35,8 +46,7 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem;
   private final PneumaticSubsystem pneumaticSubsystem;
 
-  private final Field2d m_field = new Field2d();
-
+    
   //Change to <Command>
   private SendableChooser<String> autoChooser;
 
@@ -68,15 +78,12 @@ public class RobotContainer {
       
     wristSubsystem.setDefaultCommand(
       new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false));
-    
 
     // Change the objects to Commands
     autoChooser = new SendableChooser<>();
     autoChooser.addOption("Auto 1", "Auto 1");
     autoChooser.setDefaultOption("Auto 2 (Default)", "Auto 2");
     SmartDashboard.putData(autoChooser);
-    
-    SmartDashboard.putData("Field: ", m_field);
     
     // Configure the trigger bindings
     configureBindings();
@@ -111,6 +118,7 @@ public class RobotContainer {
    */
   // public Command getAutonomousCommand() {
   //   // An example command will be run in autonomous
+  //   autoChooser.getSelected();
   //   return Autos.exampleAuto(m_exampleSubsystem);
   // }
 }

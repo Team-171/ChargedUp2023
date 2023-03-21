@@ -27,7 +27,6 @@ public class PneumaticSubsystem extends SubsystemBase {
     compressor = new Compressor(PneumaticConstants.moduleID,PneumaticsModuleType.REVPH);
     compressor.enableAnalog(PneumaticConstants.minPressure, PneumaticConstants.maxPressure);
 
-    SmartDashboard.putNumber("Compressor Pressure: ",compressor.getPressure());
   }
 
   public void togglePneumatic(){
@@ -37,6 +36,7 @@ public class PneumaticSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Compressor Pressure: ", compressor.getPressure());
     // This method will be called once per scheduler run
   }
 

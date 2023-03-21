@@ -23,6 +23,7 @@ public final class Constants {
     public static final int rightFollowDeviceID2 = 7;
 
     public static final int driveMotorsCurrentLimit = 50;
+    public static final double driveMotorsRampRate = 0.125;
   }
 
   public static class WristConstants {
@@ -48,9 +49,9 @@ public final class Constants {
 
   public static class RollerConstants {
     public static final int rollerMotorID = 1;
-    public static final double rollerPIDkp = 3.5;
-    public static final double rollerPIDki = 0.2;
-    public static final double rollerPIDkd = 0.5;
+    public static final double rollerPIDkp = 0.025;
+    public static final double rollerPIDki = 0;
+    public static final double rollerPIDkd = 0;
     public static final double rollerDeadZone = 0.1;
     public static final double rollerSpeed = 1;
   }
@@ -67,9 +68,9 @@ public final class Constants {
     public static final int armMotorID = 2;
     public static final int armMotorID2 = 10;
     public static final int armEncoderChannel = 0;
-    public static final double armPIDkp = 3.5;
-    public static final double armPIDki = 0.2;
-    public static final double armPIDkd = 0.5;
+    public static final double armPIDkp = 8;
+    public static final double armPIDki = 0.1;
+    public static final double armPIDkd = 0.1;
     public static final double armDeadZone = 0.1;
     public static final double armRoughMiddle = 0.16;
     public static final double armLowHardStop = 0.03;

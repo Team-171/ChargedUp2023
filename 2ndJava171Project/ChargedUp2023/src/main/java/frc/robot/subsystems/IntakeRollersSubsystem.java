@@ -54,10 +54,6 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     }
   }
 
-  public void stopIntakeRollers(){
-    rollersMotor.set(0);
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

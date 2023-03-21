@@ -8,6 +8,7 @@ import frc.robot.subsystems.TankDriveSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -37,6 +38,8 @@ public class TankDriveCommand extends CommandBase {
   @Override
   public void execute() {
     driveSubsystem.arcadeDrive(forward.getAsDouble(), rotation.getAsDouble());
+
+    SmartDashboard.putBoolean("AHRS Set Up: ", TankDriveSubsystem.setup);
   }
 
   // Called once the command ends or is interrupted.

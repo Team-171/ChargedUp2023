@@ -5,10 +5,28 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.*;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -24,14 +42,30 @@ public class TankDriveSubsystem extends SubsystemBase {
 
   DifferentialDrive roboDrive;
 
+  public DifferentialDriveKinematics kinematics = 
+    new DifferentialDriveKinematics(Units.inchesToMeters(23));
+
+    DifferentialDriveWheelSpeeds wheelSpeeds = new DifferentialDriveWheelSpeeds(1.6, 1.6);
+    ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
+
+    public AHRS ahrs = new AHRS();
+
+    public static boolean setup = false;
+
+    public static Pose2d m_pose;
+
+    public DifferentialDriveOdometry m_odometry;
+
+    public Field2d m_field;
+
   /** Creates a new ExampleSubsystem. */
   public TankDriveSubsystem() {
-    CANSparkMax leftLeadMotor = new CANSparkMax(DriveConstants.leftLeadDeviceID, MotorType.kBrushless);
-    CANSparkMax leftFollowMotor = new CANSparkMax(DriveConstants.leftFollowDeviceID, MotorType.kBrushless);
-    CANSparkMax leftFollowMotor2 = new CANSparkMax(DriveConstants.leftFollowDeviceID2, MotorType.kBrushless);
-    CANSparkMax rightLeadMotor = new CANSparkMax(DriveConstants.rightLeadDeviceID, MotorType.kBrushless);
-    CANSparkMax rightFollowMotor = new CANSparkMax(DriveConstants.rightFollowDeviceID, MotorType.kBrushless);
-    CANSparkMax rightFollowMotor2 = new CANSparkMax(DriveConstants.rightFollowDeviceID2, MotorType.kBrushless);
+    leftLeadMotor = new CANSparkMax(DriveConstants.leftLeadDeviceID, MotorType.kBrushless);
+    leftFollowMotor = new CANSparkMax(DriveConstants.leftFollowDeviceID, MotorType.kBrushless);
+    leftFollowMotor2 = new CANSparkMax(DriveConstants.leftFollowDeviceID2, MotorType.kBrushless);
+    rightLeadMotor = new CANSparkMax(DriveConstants.rightLeadDeviceID, MotorType.kBrushless);
+    rightFollowMotor = new CANSparkMax(DriveConstants.rightFollowDeviceID, MotorType.kBrushless);
+    rightFollowMotor2 = new CANSparkMax(DriveConstants.rightFollowDeviceID2, MotorType.kBrushless);
 
     leftLeadMotor.restoreFactoryDefaults();
     leftFollowMotor.restoreFactoryDefaults();
@@ -51,6 +85,14 @@ public class TankDriveSubsystem extends SubsystemBase {
     rightFollowMotor.setSmartCurrentLimit(DriveConstants.driveMotorsCurrentLimit);
     rightFollowMotor2.setSmartCurrentLimit(DriveConstants.driveMotorsCurrentLimit);
 
+    leftLeadMotor.setClosedLoopRampRate(DriveConstants.driveMotorsRampRate);
+    leftFollowMotor.setClosedLoopRampRate(DriveConstants.driveMotorsRampRate);
+    leftFollowMotor2.setClosedLoopRampRate(DriveConstants.driveMotorsRampRate);
+    rightLeadMotor.setClosedLoopRampRate(DriveConstants.driveMotorsRampRate);
+    rightFollowMotor.setClosedLoopRampRate(DriveConstants.driveMotorsRampRate);
+    rightFollowMotor2.setClosedLoopRampRate(DriveConstants.driveMotorsRampRate);
+
+
     leftFollowMotor.follow(leftLeadMotor);
     leftFollowMotor2.follow(leftLeadMotor);
     rightFollowMotor.follow(rightLeadMotor);
@@ -58,17 +100,44 @@ public class TankDriveSubsystem extends SubsystemBase {
 
     roboDrive = new DifferentialDrive(leftLeadMotor, rightLeadMotor);
 
-    SmartDashboard.putNumber("Left Drive Speed: ", leftLeadMotor.get());
-    SmartDashboard.putNumber("Right Drive Speed: ", rightLeadMotor.get());
+    leftLeadMotor.getEncoder().setPosition(0);
+    rightLeadMotor.getEncoder().setPosition(0);
+    leftLeadMotor.getEncoder().setPositionConversionFactor(0.0416666666666667);
+    rightLeadMotor.getEncoder().setPositionConversionFactor(0.0416666666666667);
+
+    m_odometry = new DifferentialDriveOdometry(
+        ahrs.getRotation2d(),
+        leftLeadMotor.getEncoder().getPosition(), rightLeadMotor.getEncoder().getPosition(),
+        new Pose2d(2, 1, new Rotation2d())); 
+
+    m_field = new Field2d();
+
+    SmartDashboard.putData("Field: ", m_field);
+    
   }
 
   public void arcadeDrive(double forward, double rotation){
     roboDrive.arcadeDrive(forward, rotation);
   }
 
+  public void setup(){
+    ahrs.calibrate();
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+   
+    SmartDashboard.putNumber("Left Drive Speed: ", leftLeadMotor.get());
+    SmartDashboard.putNumber("Right Drive Speed: ", rightLeadMotor.get());
+
+    var gyroAngle = ahrs.getRotation2d();
+
+    // Update the pose
+    m_pose = m_odometry.update(gyroAngle,
+        leftLeadMotor.getEncoder().getPosition(),
+        rightLeadMotor.getEncoder().getPosition());
+    
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   @Override

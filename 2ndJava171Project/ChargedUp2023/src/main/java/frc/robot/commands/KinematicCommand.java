@@ -6,22 +6,27 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeRollersSubsystem;
+import frc.robot.Constants.*;
+import frc.robot.subsystems.KinematicSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class IntakeRollersCommand extends CommandBase {
+public class KinematicCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final IntakeRollersSubsystem intakeRollersSubsystem;
-  private DoubleSupplier speed;
+  private final KinematicSubsystem kinematicSubsystem;
+
+  DoubleSupplier speed;
+
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeRollersCommand(IntakeRollersSubsystem subsystem, DoubleSupplier speed) {
-    intakeRollersSubsystem = subsystem;
-    this.speed = speed;
+  public KinematicCommand(KinematicSubsystem subsystem) {
+    kinematicSubsystem = subsystem;
+
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -33,12 +38,15 @@ public class IntakeRollersCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeRollersSubsystem.moveRoller(speed.getAsDouble());
+    kinematicSubsystem.kinematics();
+
+    SmartDashboard.putBoolean("AHRS Set Up: ", kinematicSubsystem.setup);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
