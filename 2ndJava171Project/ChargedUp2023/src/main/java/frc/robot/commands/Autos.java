@@ -5,15 +5,22 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.TankDriveSubsystem;
+import frc.robot.Constants;
+import frc.robot.Constants.AutoConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public final class Autos {
+
   /** Example static factory for an autonomous command. */
-  public static CommandBase exampleAuto(TankDriveSubsystem subsystem) {
-    //return Commands.sequence(subsystem.exampleMethodCommand(), new TankDriveCommand(subsystem));
-    return null;
+  public static CommandBase driveForwardAuto(TankDriveSubsystem subsystem) {
+    return new DriveForwardAuto(subsystem, AutoConstants.distanceForward);
   }
+
+  // public static Command simpleAuto(TankDriveSubsystem subsystem) {
+  //   subsystem.driveForward(20);
+  // }
 
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");

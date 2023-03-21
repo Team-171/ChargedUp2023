@@ -22,13 +22,14 @@ public class ArmCommand extends CommandBase {
   boolean xButton;
   boolean yButton;
   boolean reset;
+  boolean safe;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ArmCommand(ArmSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset) {
+  public ArmCommand(ArmSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe) {
     armSubsystem = subsystem;
     this.speed = speed;
     this.aButton = aButton;
@@ -36,6 +37,7 @@ public class ArmCommand extends CommandBase {
     this.xButton = xButton;
     this.yButton = yButton;
     this.reset = reset;
+    this.safe = safe;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -48,7 +50,7 @@ public class ArmCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveArm(speed.getAsDouble(), aButton, bButton, xButton, yButton, reset);
+    armSubsystem.moveArm(speed.getAsDouble(), aButton, bButton, xButton, yButton, reset, safe);
 
     SmartDashboard.putNumber("Arm Encoder Absolute Position: ", armSubsystem.getArmEncoder());
   }

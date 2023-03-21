@@ -23,8 +23,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   PIDController pid;
   double setpoint;
-  double setDistance;
-  double currentDistance;
+  double setPower;
+  double holdPosition;
 
   /** Creates a new ExampleSubsystem. */
   public ArmSubsystem() {
@@ -40,55 +40,60 @@ public class ArmSubsystem extends SubsystemBase {
 
     pid = new PIDController(ArmConstants.armPIDkp, ArmConstants.armPIDki, ArmConstants.armPIDkd);
 
-    setDistance = 0;
-    currentDistance = armEncoder.getAbsolutePosition();
+    setPower = 0;
+    holdPosition = armEncoder.getAbsolutePosition();
   }
 
-  public void moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset){
+  public void moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
 
       if(Math.abs(speed) < ArmConstants.armDeadZone) {
             speed = 0;
       }
 
       speed = speed * 0.1;
-      setpoint = speed + currentDistance;
+      setpoint = speed + holdPosition;
 
       if(aButton){
         setpoint = ArmConstants.aButton;
-        currentDistance = armEncoder.getAbsolutePosition();
+        holdPosition = ArmConstants.aButton;
         aButton = false;
       }else if(bButton){
         setpoint = ArmConstants.bButton;
-        currentDistance = armEncoder.getAbsolutePosition();
+        holdPosition = ArmConstants.bButton;
         bButton = false;
       }else if(xButton){
         setpoint = ArmConstants.xButton;
-        currentDistance = armEncoder.getAbsolutePosition();
+        holdPosition = ArmConstants.xButton;
         xButton = false;
       }else if(yButton){
         setpoint = ArmConstants.yButton;
-        currentDistance = armEncoder.getAbsolutePosition();
+        holdPosition = ArmConstants.yButton;
         yButton = false;
       }else if(reset){
         setpoint = ArmConstants.reset;
-        currentDistance = armEncoder.getAbsolutePosition();
+        holdPosition = ArmConstants.reset;
+        reset = false;
+      }else if(safe){
+        setpoint = ArmConstants.safe;
+        holdPosition = ArmConstants.safe;
+        safe = false;
       }
 
-      setDistance = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), setpoint), -ArmConstants.armSpeed, ArmConstants.armSpeed);
-      if(speed != 0){currentDistance = armEncoder.getAbsolutePosition();}
+      setPower = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), setpoint), -ArmConstants.armSpeed, ArmConstants.armSpeed);
+      if(speed != 0){holdPosition = armEncoder.getAbsolutePosition();}
       
       if(armEncoder.getAbsolutePosition() > ArmConstants.armLowHardStop && armEncoder.getAbsolutePosition() < ArmConstants.armHighHardStop){
-        armMotor.set(setDistance);
-        armMotor2.set(setDistance);
+        armMotor.set(setPower);
+        armMotor2.set(setPower);
       }else{
-        setDistance = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), ArmConstants.armRoughMiddle), -ArmConstants.armReturnSpeed, ArmConstants.armReturnSpeed);
-        armMotor.set(setDistance);
-        armMotor2.set(setDistance);
+        setPower = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), ArmConstants.armRoughMiddle), -ArmConstants.armReturnSpeed, ArmConstants.armReturnSpeed);
+        armMotor.set(setPower);
+        armMotor2.set(setPower);
       }
 
-      SmartDashboard.putNumber("Arm PID Output: ", setDistance);
+      SmartDashboard.putNumber("Arm PID Output: ", setPower);
       SmartDashboard.putNumber("Both Arm Motor Speed: ", armMotor.get());
-      SmartDashboard.putNumber("Arm Hold Position: ", currentDistance);
+      SmartDashboard.putNumber("Arm Hold Position: ", holdPosition);
   }
 
   public double getArmEncoder(){

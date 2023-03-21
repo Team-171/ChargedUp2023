@@ -12,6 +12,8 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+import java.util.function.DoubleSupplier;
+
 public final class Constants {
   public static class DriveConstants {
     public static final int kDriverControllerPort = 0;
@@ -45,6 +47,7 @@ public final class Constants {
     public static final double xButton = 0.464;
     public static final double yButton = -0.44;
     public static final double reset = 0.471; 
+    public static final double safe = 0.25;
   }
 
   public static class RollerConstants {
@@ -68,20 +71,21 @@ public final class Constants {
     public static final int armMotorID = 2;
     public static final int armMotorID2 = 10;
     public static final int armEncoderChannel = 0;
-    public static final double armPIDkp = 8;
+    public static final double armPIDkp = 7;
     public static final double armPIDki = 0.1;
     public static final double armPIDkd = 0.1;
     public static final double armDeadZone = 0.1;
     public static final double armRoughMiddle = 0.16;
     public static final double armLowHardStop = 0.03;
     public static final double armHighHardStop = 0.45;
-    public static final double armSpeed = 1;
+    public static final double armSpeed = 0.85;
     public static final double armReturnSpeed = 0.25;
-    public static final double aButton = 0.05;
+    public static final double aButton = 0.055;
     public static final double bButton = 0.4;
     public static final double xButton = 0.057;
     public static final double yButton = 0.38;
-    public static final double reset = 0.2; 
+    public static final double reset = 0.2;
+    public static final double safe = 0.25; 
   }
 
   public static class PneumaticConstants {
@@ -90,5 +94,9 @@ public final class Constants {
     public static final int forwardChannel = 0;
     public static final int reverseChannel = 1;
     public static final int moduleID = 1; 
+  }
+
+  public static class AutoConstants {
+    public static final double distanceForward = 5.0;
   }
 }

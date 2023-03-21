@@ -6,27 +6,26 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.*;
-import frc.robot.subsystems.KinematicSubsystem;
+import frc.robot.subsystems.TankDriveSubsystem;
+import frc.robot.subsystems.WristSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /** An example command that uses an example subsystem. */
-public class KinematicCommand extends CommandBase {
+public class DriveForwardAuto extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final KinematicSubsystem kinematicSubsystem;
-
-  DoubleSupplier speed;
+  private final TankDriveSubsystem driveSubsystem;
+  private double distance;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public KinematicCommand(KinematicSubsystem subsystem) {
-    kinematicSubsystem = subsystem;
-
-
+  public DriveForwardAuto(TankDriveSubsystem subsystem, double distance) {
+    driveSubsystem = subsystem;
+    this.distance = distance;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -38,14 +37,13 @@ public class KinematicCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    kinematicSubsystem.kinematics();
-
-    SmartDashboard.putBoolean("AHRS Set Up: ", kinematicSubsystem.setup);
+    driveSubsystem.driveForward(distance);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    driveSubsystem.arcadeDrive(0, 0);
   }
 
   // Returns true when the command should end.

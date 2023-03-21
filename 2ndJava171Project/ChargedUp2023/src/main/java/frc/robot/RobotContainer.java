@@ -46,9 +46,7 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem;
   private final PneumaticSubsystem pneumaticSubsystem;
 
-    
-  //Change to <Command>
-  private SendableChooser<String> autoChooser;
+  private SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
@@ -74,15 +72,15 @@ public class RobotContainer {
       new IntakeRollersCommand(rollersSubsystem, () -> operatorController.getRawAxis(OperatorConstants.rightTrigger) - operatorController.getRawAxis(OperatorConstants.leftTrigger)));
     
     armSubsystem.setDefaultCommand(
-      new ArmCommand(armSubsystem, () -> operatorController.getLeftY(), false, false, false, false, false));
+      new ArmCommand(armSubsystem, () -> operatorController.getLeftY(), false, false, false, false, false, false));
       
     wristSubsystem.setDefaultCommand(
-      new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false));
+      new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false, false));
 
     // Change the objects to Commands
     autoChooser = new SendableChooser<>();
-    autoChooser.addOption("Auto 1", "Auto 1");
-    autoChooser.setDefaultOption("Auto 2 (Default)", "Auto 2");
+    autoChooser.addOption("Simple Auto", Autos.driveForwardAuto(driveSubsystem));
+    autoChooser.setDefaultOption("Default Auto", Autos.driveForwardAuto(driveSubsystem));
     SmartDashboard.putData(autoChooser);
     
     // Configure the trigger bindings
@@ -100,13 +98,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operatorController.a().whileTrue(new ArmCommand(armSubsystem, () -> 0, true, false, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, true, false, false, false, false));
-    operatorController.b().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, true, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, true, false, false, false));
-    operatorController.x().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, true, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, true, false, false));
-    operatorController.y().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, true, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, true, false));
+    operatorController.a().whileTrue(new ArmCommand(armSubsystem, () -> 0, true, false, false, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, true, false, false, false, false, false));
+    operatorController.b().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, true, false, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, true, false, false, false, false));
+    operatorController.x().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, true, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, true, false, false, false));
+    operatorController.y().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, true, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, true, false, false));
   
-    operatorController.leftBumper().and(operatorController.rightBumper()).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, true)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, true));
-    
+    operatorController.leftBumper().or(operatorController.rightBumper()).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, false, true)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, false, true));
+    operatorController.button(7).or(operatorController.button(8)).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, true, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, true, false));
+
     driverController.rightBumper().onTrue(new PneumaticCommand(pneumaticSubsystem));
   }
 
@@ -116,9 +115,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  // public Command getAutonomousCommand() {
-  //   // An example command will be run in autonomous
-  //   autoChooser.getSelected();
-  //   return Autos.exampleAuto(m_exampleSubsystem);
-  // }
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+    return autoChooser.getSelected();
+  }
 }

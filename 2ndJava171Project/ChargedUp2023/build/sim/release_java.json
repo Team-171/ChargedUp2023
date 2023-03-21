@@ -1,0 +1,21 @@
+[
+  {
+    "type": "java",
+    "name": "jar (in project ChargedUp2023)",
+    "extensions": [
+      {
+        "name": "Sim DriverStation",
+        "libName": "C:\\Users\\Team 171\\Documents\\SPARK-MAX-Examples-master\\C++\\ChargedUp2023\\2ndJava171Project\\ChargedUp2023\\build\\jni\\release\\halsim_ds_socket.dll",
+        "defaultEnabled": false
+      },
+      {
+        "name": "Sim GUI",
+        "libName": "C:\\Users\\Team 171\\Documents\\SPARK-MAX-Examples-master\\C++\\ChargedUp2023\\2ndJava171Project\\ChargedUp2023\\build\\jni\\release\\halsim_gui.dll",
+        "defaultEnabled": true
+      }
+    ],
+    "environment": {},
+    "libraryDir": "C:\\Users\\Team 171\\Documents\\SPARK-MAX-Examples-master\\C++\\ChargedUp2023\\2ndJava171Project\\ChargedUp2023\\build\\jni\\release",
+    "mainClassName": "frc.robot.Main"
+  }
+]

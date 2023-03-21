@@ -41,7 +41,7 @@ public class WristSubsystem extends SubsystemBase {
     currentDistance = wristEncoder.getDistance();
   }
 
-  public void moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset){
+  public void moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
     if(Math.abs(speed) < WristConstants.wristDeadZone) {
       speed = 0;
     }
@@ -51,20 +51,23 @@ public class WristSubsystem extends SubsystemBase {
 
     if(aButton){
       setpoint = WristConstants.aButton;
-      currentDistance = wristEncoder.getDistance();
+      currentDistance = WristConstants.aButton;
     }else if(bButton){
       setpoint = WristConstants.bButton;
-      currentDistance = wristEncoder.getDistance();
+      currentDistance = WristConstants.bButton;
     }else if(xButton){
       setpoint = WristConstants.xButton;
-      currentDistance = wristEncoder.getDistance();
+      currentDistance = WristConstants.xButton;
     }else if(yButton){
       setpoint = WristConstants.yButton;
-      currentDistance = wristEncoder.getDistance();
+      currentDistance = WristConstants.yButton;
     }else if(reset){
       setpoint = WristConstants.reset;
-      currentDistance = wristEncoder.getDistance();
-    }  
+      currentDistance = WristConstants.reset;
+    }else if(safe){
+      setpoint = WristConstants.safe;
+      currentDistance = WristConstants.safe;
+    }
 
     setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
     if(speed != 0){currentDistance = wristEncoder.getDistance();}

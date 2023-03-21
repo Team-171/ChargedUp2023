@@ -21,13 +21,14 @@ public class WristCommand extends CommandBase {
   boolean xButton;
   boolean yButton;
   boolean reset;
+  boolean safe;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public WristCommand(WristSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset) {
+  public WristCommand(WristSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe) {
     wristSubsystem = subsystem;
     this.speed = speed;
     this.aButton = aButton;
@@ -35,6 +36,7 @@ public class WristCommand extends CommandBase {
     this.xButton = xButton;
     this.yButton = yButton;
     this.reset = reset;
+    this.safe = safe;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -47,7 +49,7 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    wristSubsystem.moveWrist(speed.getAsDouble(), aButton, bButton, xButton, yButton, reset);
+    wristSubsystem.moveWrist(speed.getAsDouble(), aButton, bButton, xButton, yButton, reset, safe);
 
     SmartDashboard.putNumber("Wrist Encoder Distance: ", wristSubsystem.getWristEncoder());
   }

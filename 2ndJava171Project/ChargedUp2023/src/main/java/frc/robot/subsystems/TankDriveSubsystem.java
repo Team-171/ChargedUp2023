@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.PIDConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -57,6 +60,8 @@ public class TankDriveSubsystem extends SubsystemBase {
     public DifferentialDriveOdometry m_odometry;
 
     public Field2d m_field;
+
+    public PIDController pid;
 
   /** Creates a new ExampleSubsystem. */
   public TankDriveSubsystem() {
@@ -114,10 +119,17 @@ public class TankDriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("Field: ", m_field);
     
+    pid = new PIDController(3, 0.5, 0.5);
   }
 
   public void arcadeDrive(double forward, double rotation){
     roboDrive.arcadeDrive(forward, rotation);
+  }
+
+  public void driveForward(double length){
+
+    SmartDashboard.putNumber("Left Encoder:" , leftLeadMotor.getEncoder().getPosition());
+    roboDrive.arcadeDrive(MathUtil.clamp(pid.calculate(leftLeadMotor.getEncoder().getPosition(), length), -0.5, 0.5), 0);
   }
 
   public void setup(){

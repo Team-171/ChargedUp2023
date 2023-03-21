@@ -22,7 +22,7 @@ public class PneumaticSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public PneumaticSubsystem() {
     solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticConstants.forwardChannel, PneumaticConstants.reverseChannel);
-    solenoid.set(Value.kForward);
+    solenoid.set(Value.kReverse);
 
     compressor = new Compressor(PneumaticConstants.moduleID,PneumaticsModuleType.REVPH);
     compressor.enableAnalog(PneumaticConstants.minPressure, PneumaticConstants.maxPressure);
