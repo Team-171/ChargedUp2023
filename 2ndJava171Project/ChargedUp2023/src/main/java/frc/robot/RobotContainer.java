@@ -44,7 +44,7 @@ public class RobotContainer {
   private final WristSubsystem wristSubsystem;
   private final IntakeRollersSubsystem rollersSubsystem;
   private final ArmSubsystem armSubsystem;
-  private final PneumaticSubsystem pneumaticSubsystem;
+  private final GearShiftSubsystem gearShiftSubsystem;
 
   private SendableChooser<Command> autoChooser;
 
@@ -62,7 +62,7 @@ public class RobotContainer {
     wristSubsystem = new WristSubsystem();
     rollersSubsystem = new IntakeRollersSubsystem();
     armSubsystem = new ArmSubsystem();
-    pneumaticSubsystem = new PneumaticSubsystem();
+    gearShiftSubsystem = new GearShiftSubsystem();
 
     // set the default command so that this will run constantly
     driveSubsystem.setDefaultCommand(
@@ -106,7 +106,7 @@ public class RobotContainer {
     operatorController.leftBumper().or(operatorController.rightBumper()).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, false, true)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, false, true));
     operatorController.button(7).or(operatorController.button(8)).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, true, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, true, false));
 
-    driverController.rightBumper().onTrue(new PneumaticCommand(pneumaticSubsystem));
+    driverController.rightBumper().onTrue(new GearShiftCommand(gearShiftSubsystem));
   }
 
   
