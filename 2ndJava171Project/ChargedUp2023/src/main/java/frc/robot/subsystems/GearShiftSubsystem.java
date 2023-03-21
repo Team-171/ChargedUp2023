@@ -13,14 +13,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
-public class PneumaticSubsystem extends SubsystemBase {
+public class GearShiftSubsystem extends SubsystemBase {
 
   DoubleSolenoid solenoid;
   Compressor compressor;
 
   
   /** Creates a new ExampleSubsystem. */
-  public PneumaticSubsystem() {
+  public GearShiftSubsystem() {
     solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticConstants.forwardChannel, PneumaticConstants.reverseChannel);
     solenoid.set(Value.kReverse);
 

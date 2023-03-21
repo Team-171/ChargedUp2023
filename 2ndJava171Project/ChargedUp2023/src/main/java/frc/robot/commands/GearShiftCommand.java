@@ -4,28 +4,21 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.*;
-import frc.robot.subsystems.PneumaticSubsystem;
+import frc.robot.subsystems.GearShiftSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class PneumaticCommand extends CommandBase {
+public class GearShiftCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PneumaticSubsystem pneumaticSubsystem;
-
-  DoubleSupplier speed;
+  private final GearShiftSubsystem gearShiftSubsystem;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PneumaticCommand(PneumaticSubsystem subsystem) {
-    pneumaticSubsystem = subsystem;
-
+  public GearShiftCommand(GearShiftSubsystem subsystem) {
+    gearShiftSubsystem = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -38,7 +31,7 @@ public class PneumaticCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pneumaticSubsystem.togglePneumatic();
+    gearShiftSubsystem.togglePneumatic();
   }
 
   // Called once the command ends or is interrupted.

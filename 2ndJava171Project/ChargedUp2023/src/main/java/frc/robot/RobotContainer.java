@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import javax.management.relation.RoleResult;
 import javax.swing.text.StyleContext.SmallAttributeSet;
 
 import com.pathplanner.lib.PathConstraints;
@@ -20,7 +17,6 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -30,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
+import frc.robot.commands.autos.Autos;
 import frc.robot.subsystems.*;
 
 /**
@@ -44,7 +41,7 @@ public class RobotContainer {
   private final WristSubsystem wristSubsystem;
   private final IntakeRollersSubsystem rollersSubsystem;
   private final ArmSubsystem armSubsystem;
-  private final PneumaticSubsystem pneumaticSubsystem;
+  private final GearShiftSubsystem gearShiftSubsystem;
 
   private SendableChooser<Command> autoChooser;
 
@@ -62,7 +59,7 @@ public class RobotContainer {
     wristSubsystem = new WristSubsystem();
     rollersSubsystem = new IntakeRollersSubsystem();
     armSubsystem = new ArmSubsystem();
-    pneumaticSubsystem = new PneumaticSubsystem();
+    gearShiftSubsystem = new GearShiftSubsystem();
 
     // set the default command so that this will run constantly
     driveSubsystem.setDefaultCommand(
@@ -72,15 +69,16 @@ public class RobotContainer {
       new IntakeRollersCommand(rollersSubsystem, () -> operatorController.getRawAxis(OperatorConstants.rightTrigger) - operatorController.getRawAxis(OperatorConstants.leftTrigger)));
     
     armSubsystem.setDefaultCommand(
-      new ArmCommand(armSubsystem, () -> operatorController.getLeftY(), false, false, false, false, false, false));
+      new ArmCommand(armSubsystem, () -> operatorController.getLeftY()));
       
     wristSubsystem.setDefaultCommand(
       new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false, false));
 
     // Change the objects to Commands
     autoChooser = new SendableChooser<>();
-    autoChooser.addOption("Simple Auto", Autos.driveForwardAuto(driveSubsystem));
-    autoChooser.setDefaultOption("Default Auto", Autos.driveForwardAuto(driveSubsystem));
+    autoChooser.addOption("Forward Auto", Autos.driveForwardAuto(driveSubsystem));
+    autoChooser.addOption("Balance Auto", Autos.balanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
+    autoChooser.setDefaultOption("Simple Auto", Autos.simpleAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     SmartDashboard.putData(autoChooser);
     
     // Configure the trigger bindings
@@ -98,15 +96,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operatorController.a().whileTrue(new ArmCommand(armSubsystem, () -> 0, true, false, false, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, true, false, false, false, false, false));
-    operatorController.b().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, true, false, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, true, false, false, false, false));
-    operatorController.x().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, true, false, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, true, false, false, false));
-    operatorController.y().whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, true, false, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, true, false, false));
+    operatorController.a().whileTrue(new ConePickupPosition(wristSubsystem, armSubsystem));
+    operatorController.b().whileTrue(new Level3ScorePosition(wristSubsystem, armSubsystem));
+    operatorController.x().whileTrue(new CubePickupPosition(wristSubsystem, armSubsystem));
+    operatorController.y().whileTrue(new ConeLevel2Position(wristSubsystem, armSubsystem));
   
-    operatorController.leftBumper().or(operatorController.rightBumper()).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, false, true)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, false, true));
-    operatorController.button(7).or(operatorController.button(8)).whileTrue(new ArmCommand(armSubsystem, () -> 0, false, false, false, false, true, false)).whileTrue(new WristCommand(wristSubsystem, () -> 0, false, false, false, false, true, false));
+    operatorController.leftBumper().or(operatorController.rightBumper()).whileTrue(new SafePosition(wristSubsystem, armSubsystem));
+    operatorController.button(DriveConstants.selectControllerbutton).or(operatorController.button(DriveConstants.startControllerButton)).whileTrue(new ResetPosition(wristSubsystem, armSubsystem));
 
-    driverController.rightBumper().onTrue(new PneumaticCommand(pneumaticSubsystem));
+    driverController.rightBumper().onTrue(new GearShiftCommand(gearShiftSubsystem));
+    driverController.x().whileTrue(new BalanceCommand(driveSubsystem));
   }
 
   

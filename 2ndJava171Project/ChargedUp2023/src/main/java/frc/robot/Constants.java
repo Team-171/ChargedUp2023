@@ -12,8 +12,6 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-import java.util.function.DoubleSupplier;
-
 public final class Constants {
   public static class DriveConstants {
     public static final int kDriverControllerPort = 0;
@@ -26,6 +24,10 @@ public final class Constants {
 
     public static final int driveMotorsCurrentLimit = 50;
     public static final double driveMotorsRampRate = 0.125;
+    public static final double balanceDeadZone = 2.0;
+
+    public static final int selectControllerbutton = 7;
+    public static final int startControllerButton = 8;
   }
 
   public static class WristConstants {
@@ -42,11 +44,11 @@ public final class Constants {
     public static final double wristHighHardStop = 1.45;
     public static final double wristSpeed = 0.75;
     public static final double wristReturnSpeed = 0.25;
-    public static final double aButton = 0.656;
-    public static final double bButton = -0.9;
-    public static final double xButton = 0.464;
-    public static final double yButton = -0.44;
-    public static final double reset = 0.471; 
+    public static final double conePickupEncoderPosition = 0.656;
+    public static final double thirdLevelEncoderPosition = -0.9;
+    public static final double cubePickupEncoderPosition = 0.464;
+    public static final double secondLevelEncoderPosition = -0.44;
+    public static final double reset = 0.42; 
     public static final double safe = 0.25;
   }
 
@@ -78,13 +80,13 @@ public final class Constants {
     public static final double armRoughMiddle = 0.16;
     public static final double armLowHardStop = 0.03;
     public static final double armHighHardStop = 0.45;
-    public static final double armSpeed = 0.85;
+    public static final double armSpeed = 0.75;
     public static final double armReturnSpeed = 0.25;
-    public static final double aButton = 0.055;
-    public static final double bButton = 0.4;
-    public static final double xButton = 0.057;
-    public static final double yButton = 0.38;
-    public static final double reset = 0.2;
+    public static final double conePickupEncoderPosition = 0.055;
+    public static final double thirdLevelEncoderPosition = 0.4;
+    public static final double cubePickupEncoderPostion = 0.057;
+    public static final double secondLevelEncoderPosition = 0.38;
+    public static final double reset = 0.217;
     public static final double safe = 0.25; 
   }
 
@@ -97,6 +99,10 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double distanceForward = 5.0;
+    public static final double distanceForward = 8;
+    public static final double balanceDistanceForward = 2.5;
+    public static final double armTolerance = 0.025;
+    public static final double wristTolerance = 0.025;
+    public static final double driveTolerance = 0.025;
   }
 }

@@ -4,30 +4,29 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.WristSubsystem;
+
 
 /** An example command that uses an example subsystem. */
-public class ArmCommand extends CommandBase {
+public class CubePickupPosition extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final WristSubsystem wristSubsystem;
   private final ArmSubsystem armSubsystem;
-
-  DoubleSupplier speed;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ArmCommand(ArmSubsystem subsystem, DoubleSupplier speed) {
-    armSubsystem = subsystem;
-    this.speed = speed;
+  public CubePickupPosition(WristSubsystem subsystem, ArmSubsystem armSubsystem) {
+    wristSubsystem = subsystem;
+    this.armSubsystem = armSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
+    addRequirements(armSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -37,14 +36,16 @@ public class ArmCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveArm(speed.getAsDouble(), false, false, false, false, false, false);
-
-    SmartDashboard.putNumber("Arm Encoder Absolute Position: ", armSubsystem.getArmEncoder());
+    armSubsystem.moveArm(0, false, false, true, false, false, false);
+    wristSubsystem.moveWrist(0, false, false, true, false, false, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    armSubsystem.moveArm(0, false, false, false, false, false, false);
+    wristSubsystem.moveWrist(0, false, false, false, false, false, false);
+  }
 
   // Returns true when the command should end.
   @Override

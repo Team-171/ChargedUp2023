@@ -24,8 +24,8 @@ public class WristSubsystem extends SubsystemBase {
 
   PIDController pid;
   double setpoint;
-  double setDistance;
-  double currentDistance;
+  double setPower;
+  double holdPosition;
 
   /** Creates a new ExampleSubsystem. */
   public WristSubsystem() {
@@ -37,51 +37,58 @@ public class WristSubsystem extends SubsystemBase {
 
     pid = new PIDController(WristConstants.wristPIDkp, WristConstants.wristPIDki, WristConstants.wristPIDkd);
 
-    setDistance = 0;
-    currentDistance = wristEncoder.getDistance();
+    setPower = 0;
+    holdPosition = wristEncoder.getDistance();
   }
 
-  public void moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
+  public boolean moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
+    
     if(Math.abs(speed) < WristConstants.wristDeadZone) {
       speed = 0;
     }
 
     speed = speed * 0.25;
-    setpoint = speed + currentDistance;
+    setpoint = speed + holdPosition;
 
     if(aButton){
-      setpoint = WristConstants.aButton;
-      currentDistance = WristConstants.aButton;
+      setpoint = WristConstants.conePickupEncoderPosition;
+      holdPosition = WristConstants.conePickupEncoderPosition;
     }else if(bButton){
-      setpoint = WristConstants.bButton;
-      currentDistance = WristConstants.bButton;
+      setpoint = WristConstants.thirdLevelEncoderPosition;
+      holdPosition = WristConstants.thirdLevelEncoderPosition;
     }else if(xButton){
-      setpoint = WristConstants.xButton;
-      currentDistance = WristConstants.xButton;
+      setpoint = WristConstants.cubePickupEncoderPosition;
+      holdPosition = WristConstants.cubePickupEncoderPosition;
     }else if(yButton){
-      setpoint = WristConstants.yButton;
-      currentDistance = WristConstants.yButton;
+      setpoint = WristConstants.secondLevelEncoderPosition;
+      holdPosition = WristConstants.secondLevelEncoderPosition;
     }else if(reset){
       setpoint = WristConstants.reset;
-      currentDistance = WristConstants.reset;
+      holdPosition = WristConstants.reset;
     }else if(safe){
       setpoint = WristConstants.safe;
-      currentDistance = WristConstants.safe;
+      holdPosition = WristConstants.safe;
     }
 
-    setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
-    if(speed != 0){currentDistance = wristEncoder.getDistance();}
+    setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
+    if(speed != 0){holdPosition = wristEncoder.getDistance();}
 
     if(wristEncoder.getDistance() > WristConstants.wristLowHardStop && wristEncoder.getDistance() < WristConstants.wristHighHardStop){
-      wristMotor.set(setDistance);
+      wristMotor.set(setPower);
     }else{
-      setDistance = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), WristConstants.wristRoughMiddle), -WristConstants.wristReturnSpeed, WristConstants.wristReturnSpeed);
-      wristMotor.set(setDistance);
+      setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), WristConstants.wristRoughMiddle), -WristConstants.wristReturnSpeed, WristConstants.wristReturnSpeed);
+      wristMotor.set(setPower);
     }
 
-    SmartDashboard.putNumber("Wrist PID Output: ", setDistance);
+    SmartDashboard.putNumber("Wrist PID Output: ", setPower);
     SmartDashboard.putNumber("Wrist Speed: ", wristMotor.get());
-    SmartDashboard.putNumber("Wrist Hold Distance: ", currentDistance);
+    SmartDashboard.putNumber("Wrist Hold Distance: ", holdPosition);
+
+    if(wristEncoder.getDistance() > holdPosition - AutoConstants.wristTolerance && wristEncoder.getDistance() < holdPosition + AutoConstants.wristTolerance){
+      return true;
+    }
+
+    return false;
   }
 
   public double getWristEncoder(){

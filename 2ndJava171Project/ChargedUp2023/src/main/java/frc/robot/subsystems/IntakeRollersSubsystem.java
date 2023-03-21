@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
-import frc.robot.Constants.RollerConstants;
 import edu.wpi.first.math.controller.PIDController;
 
 import com.revrobotics.CANSparkMax;
@@ -19,8 +18,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
   CANSparkMax rollersMotor;
   PIDController pid;
   double setDistance;
-  double currentDistance;
-  double setpoint;
+  double holdPosition;
 
   /** Creates a new ExampleSubsystem. */
   public IntakeRollersSubsystem() {
@@ -30,8 +28,6 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     rollersMotor.getEncoder().setPosition(0);
 
     pid = new PIDController(RollerConstants.rollerPIDkp, RollerConstants.rollerPIDki, RollerConstants.rollerPIDkd);
-
-    currentDistance = 0;
   }
 
   public void moveRoller(double speed){
@@ -39,19 +35,16 @@ public class IntakeRollersSubsystem extends SubsystemBase {
       speed = 0;
     }
 
-    // setpoint = currentDistance + speed;
-    // setDistance = MathUtil.clamp(pid.calculate(rollersMotor.getEncoder().getPosition(), setpoint), -1, 1);
-
-    // if(speed != 0){
-    //   currentDistance = rollersMotor.getEncoder().getPosition();
-    // }
-
     if(speed != 0){
       rollersMotor.set(speed);
       rollersMotor.getEncoder().setPosition(0);
     }else{
       rollersMotor.set(MathUtil.clamp(pid.calculate(rollersMotor.getEncoder().getPosition(), 0), -RollerConstants.rollerSpeed, RollerConstants.rollerSpeed));
     }
+  }
+
+  public void reset(){
+    rollersMotor.getEncoder().setPosition(0);
   }
 
   @Override

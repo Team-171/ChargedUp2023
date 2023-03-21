@@ -4,27 +4,21 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.TankDriveSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class ArmCommand extends CommandBase {
+public class BalanceCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ArmSubsystem armSubsystem;
-
-  DoubleSupplier speed;
+  private final TankDriveSubsystem driveSubsystem;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ArmCommand(ArmSubsystem subsystem, DoubleSupplier speed) {
-    armSubsystem = subsystem;
-    this.speed = speed;
+  public BalanceCommand(TankDriveSubsystem subsystem) {
+    this.driveSubsystem = subsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -37,9 +31,7 @@ public class ArmCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveArm(speed.getAsDouble(), false, false, false, false, false, false);
-
-    SmartDashboard.putNumber("Arm Encoder Absolute Position: ", armSubsystem.getArmEncoder());
+    driveSubsystem.balance();
   }
 
   // Called once the command ends or is interrupted.

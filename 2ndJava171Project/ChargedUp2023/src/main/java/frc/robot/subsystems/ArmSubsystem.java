@@ -44,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
     holdPosition = armEncoder.getAbsolutePosition();
   }
 
-  public void moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
+  public boolean moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
 
       if(Math.abs(speed) < ArmConstants.armDeadZone) {
             speed = 0;
@@ -54,20 +54,20 @@ public class ArmSubsystem extends SubsystemBase {
       setpoint = speed + holdPosition;
 
       if(aButton){
-        setpoint = ArmConstants.aButton;
-        holdPosition = ArmConstants.aButton;
+        setpoint = ArmConstants.conePickupEncoderPosition;
+        holdPosition = ArmConstants.conePickupEncoderPosition;
         aButton = false;
       }else if(bButton){
-        setpoint = ArmConstants.bButton;
-        holdPosition = ArmConstants.bButton;
+        setpoint = ArmConstants.thirdLevelEncoderPosition;
+        holdPosition = ArmConstants.thirdLevelEncoderPosition;
         bButton = false;
       }else if(xButton){
-        setpoint = ArmConstants.xButton;
-        holdPosition = ArmConstants.xButton;
+        setpoint = ArmConstants.cubePickupEncoderPostion;
+        holdPosition = ArmConstants.cubePickupEncoderPostion;
         xButton = false;
       }else if(yButton){
-        setpoint = ArmConstants.yButton;
-        holdPosition = ArmConstants.yButton;
+        setpoint = ArmConstants.secondLevelEncoderPosition;
+        holdPosition = ArmConstants.secondLevelEncoderPosition;
         yButton = false;
       }else if(reset){
         setpoint = ArmConstants.reset;
@@ -94,6 +94,12 @@ public class ArmSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Arm PID Output: ", setPower);
       SmartDashboard.putNumber("Both Arm Motor Speed: ", armMotor.get());
       SmartDashboard.putNumber("Arm Hold Position: ", holdPosition);
+
+      if(armEncoder.getAbsolutePosition() > holdPosition - AutoConstants.armTolerance && armEncoder.getAbsolutePosition() < holdPosition + AutoConstants.armTolerance){
+        return true;
+      }
+
+      return false;
   }
 
   public double getArmEncoder(){
