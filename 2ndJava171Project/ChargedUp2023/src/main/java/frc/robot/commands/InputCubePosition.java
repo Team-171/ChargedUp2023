@@ -10,19 +10,17 @@ import frc.robot.subsystems.WristSubsystem;
 
 
 /** An example command that uses an example subsystem. */
-public class ResetPosition extends CommandBase {
+public class InputCubePosition extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
   private final ArmSubsystem armSubsystem;
-  private boolean wristFinished;
-  private boolean armFinished;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ResetPosition(WristSubsystem subsystem, ArmSubsystem armSubsystem) {
+  public InputCubePosition(WristSubsystem subsystem, ArmSubsystem armSubsystem) {
     wristSubsystem = subsystem;
     this.armSubsystem = armSubsystem;
 
@@ -38,8 +36,8 @@ public class ResetPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armFinished = armSubsystem.moveArm(0, false, false, false, false, true, false, false, false);
-    wristFinished = wristSubsystem.moveWrist(0, false, false, false, false, true, false, false, false);
+    armSubsystem.moveArm(0, false, false, false, false, false, false, false, true);
+    wristSubsystem.moveWrist(0, false, false, false, false, false, false, false, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -52,8 +50,6 @@ public class ResetPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(armFinished && wristFinished)
-      return true;
     return false;
   }
 }

@@ -44,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
     holdPosition = armEncoder.getAbsolutePosition();
   }
 
-  public boolean moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
+  public boolean moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe, boolean inputCone, boolean inputCube){
 
       if(Math.abs(speed) < ArmConstants.armDeadZone) {
             speed = 0;
@@ -69,6 +69,14 @@ public class ArmSubsystem extends SubsystemBase {
         setpoint = ArmConstants.secondLevelEncoderPosition;
         holdPosition = ArmConstants.secondLevelEncoderPosition;
         yButton = false;
+      }else if(inputCone){
+        setpoint = ArmConstants.inputConeEncoderPosition;
+        holdPosition = ArmConstants.inputConeEncoderPosition;
+        inputCone = false;
+      }else if(inputCube){
+        setpoint = ArmConstants.inputCubeEncoderPosition;
+        holdPosition = ArmConstants.inputCubeEncoderPosition;
+        inputCube = false;
       }else if(reset){
         setpoint = ArmConstants.reset;
         holdPosition = ArmConstants.reset;

@@ -44,8 +44,8 @@ public class HoldPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armFinished = armSubsystem.moveArm(0, false, false, false, false, false, false);
-    wristFinished = wristSubsystem.moveWrist(0, false, false, false, false, false, false);
+    armFinished = armSubsystem.moveArm(0, false, false, false, false, false, false, false, false);
+    wristFinished = wristSubsystem.moveWrist(0, false, false, false, false, false, false, false, false);
 }
 
   // Called once the command ends or is interrupted.

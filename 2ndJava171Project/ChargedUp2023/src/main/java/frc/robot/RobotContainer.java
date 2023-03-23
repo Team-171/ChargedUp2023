@@ -72,12 +72,13 @@ public class RobotContainer {
       new ArmCommand(armSubsystem, () -> operatorController.getLeftY()));
       
     wristSubsystem.setDefaultCommand(
-      new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false, false));
+      new WristCommand(wristSubsystem, () -> operatorController.getRightY(), false, false, false, false, false, false, false, false));
 
     // Change the objects to Commands
     autoChooser = new SendableChooser<>();
     autoChooser.addOption("Forward Auto", Autos.driveForwardAuto(driveSubsystem));
     autoChooser.addOption("Balance Auto", Autos.balanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
+    autoChooser.addOption("Test Balance Auto", Autos.testBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     autoChooser.setDefaultOption("Simple Auto", Autos.simpleAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     SmartDashboard.putData(autoChooser);
     
@@ -97,9 +98,13 @@ public class RobotContainer {
    */
   private void configureBindings() {
     operatorController.a().whileTrue(new ConePickupPosition(wristSubsystem, armSubsystem));
-    operatorController.b().whileTrue(new Level3ScorePosition(wristSubsystem, armSubsystem));
+    operatorController.pov(0).whileTrue(new Level3ScorePosition(wristSubsystem, armSubsystem));
     operatorController.x().whileTrue(new CubePickupPosition(wristSubsystem, armSubsystem));
-    operatorController.y().whileTrue(new ConeLevel2Position(wristSubsystem, armSubsystem));
+    operatorController.pov(90).whileTrue(new ConeLevel2Position(wristSubsystem, armSubsystem));
+    operatorController.pov(270).whileTrue(new CubeLevel2Position(wristSubsystem, armSubsystem));
+
+    operatorController.b().whileTrue(new InputConePosition(wristSubsystem, armSubsystem));
+    operatorController.y().whileTrue(new InputCubePosition(wristSubsystem, armSubsystem));
   
     operatorController.leftBumper().or(operatorController.rightBumper()).whileTrue(new SafePosition(wristSubsystem, armSubsystem));
     operatorController.button(DriveConstants.selectControllerbutton).or(operatorController.button(DriveConstants.startControllerButton)).whileTrue(new ResetPosition(wristSubsystem, armSubsystem));

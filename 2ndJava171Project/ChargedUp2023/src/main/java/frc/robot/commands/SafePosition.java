@@ -36,8 +36,8 @@ public class SafePosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveArm(0, false, false, false, false, false, true);
-    wristSubsystem.moveWrist(0, false, false, false, false, false, true);
+    armSubsystem.moveArm(0, false, false, false, false, false, true, false, false);
+    wristSubsystem.moveWrist(0, false, false, false, false, false, true, false, false);
   }
 
   // Called once the command ends or is interrupted.

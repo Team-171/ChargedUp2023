@@ -41,7 +41,7 @@ public class WristSubsystem extends SubsystemBase {
     holdPosition = wristEncoder.getDistance();
   }
 
-  public boolean moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe){
+  public boolean moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe, boolean inputCone, boolean inputCube){
     
     if(Math.abs(speed) < WristConstants.wristDeadZone) {
       speed = 0;
@@ -62,6 +62,12 @@ public class WristSubsystem extends SubsystemBase {
     }else if(yButton){
       setpoint = WristConstants.secondLevelEncoderPosition;
       holdPosition = WristConstants.secondLevelEncoderPosition;
+    }else if(inputCone){
+      setpoint = WristConstants.inputConeEncoderPosition;
+      holdPosition = WristConstants.inputConeEncoderPosition;
+    }else if(inputCube){
+      setpoint = WristConstants.inputCubeEncoderPosition;
+      holdPosition = WristConstants.inputCubeEncoderPosition;
     }else if(reset){
       setpoint = WristConstants.reset;
       holdPosition = WristConstants.reset;

@@ -30,6 +30,10 @@ public final class Autos {
     return new BalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }
 
+  public static CommandBase testBalanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
+    return new TestBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
+  }
+
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
   }

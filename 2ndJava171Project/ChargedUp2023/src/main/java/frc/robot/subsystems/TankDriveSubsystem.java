@@ -129,6 +129,7 @@ public class TankDriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Left Encoder:" , leftLeadMotor.getEncoder().getPosition());
     SmartDashboard.putNumber("Length: ", length);
+    
     roboDrive.arcadeDrive(MathUtil.clamp(drivePid.calculate(leftLeadMotor.getEncoder().getPosition(), length), -0.5, 0.5), 0);
 
     if(leftLeadMotor.getEncoder().getPosition() > length - AutoConstants.driveTolerance && leftLeadMotor.getEncoder().getPosition() < length + AutoConstants.driveTolerance){
