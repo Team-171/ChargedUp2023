@@ -41,7 +41,7 @@ public class WristSubsystem extends SubsystemBase {
     holdPosition = wristEncoder.getDistance();
   }
 
-  public boolean moveWrist(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe, boolean inputCone, boolean inputCube){
+  public boolean moveWristStick(double speed){
     
     if(Math.abs(speed) < WristConstants.wristDeadZone) {
       speed = 0;
@@ -50,34 +50,9 @@ public class WristSubsystem extends SubsystemBase {
     speed = speed * 0.25;
     setpoint = speed + holdPosition;
 
-    if(aButton){
-      setpoint = WristConstants.conePickupEncoderPosition;
-      holdPosition = WristConstants.conePickupEncoderPosition;
-    }else if(bButton){
-      setpoint = WristConstants.thirdLevelEncoderPosition;
-      holdPosition = WristConstants.thirdLevelEncoderPosition;
-    }else if(xButton){
-      setpoint = WristConstants.cubePickupEncoderPosition;
-      holdPosition = WristConstants.cubePickupEncoderPosition;
-    }else if(yButton){
-      setpoint = WristConstants.secondLevelEncoderPosition;
-      holdPosition = WristConstants.secondLevelEncoderPosition;
-    }else if(inputCone){
-      setpoint = WristConstants.inputConeEncoderPosition;
-      holdPosition = WristConstants.inputConeEncoderPosition;
-    }else if(inputCube){
-      setpoint = WristConstants.inputCubeEncoderPosition;
-      holdPosition = WristConstants.inputCubeEncoderPosition;
-    }else if(reset){
-      setpoint = WristConstants.reset;
-      holdPosition = WristConstants.reset;
-    }else if(safe){
-      setpoint = WristConstants.safe;
-      holdPosition = WristConstants.safe;
-    }
-
     setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
-    if(speed != 0){holdPosition = wristEncoder.getDistance();}
+    if(speed != 0)
+      holdPosition = wristEncoder.getDistance();
 
     if(wristEncoder.getDistance() > WristConstants.wristLowHardStop && wristEncoder.getDistance() < WristConstants.wristHighHardStop){
       wristMotor.set(setPower);
@@ -95,6 +70,25 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     return false;
+  }
+
+  public boolean moveWristButton(double position){
+    setpoint = position;
+    holdPosition = position;
+
+    setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
+
+    wristMotor.set(setPower);
+
+    if(wristEncoder.getDistance() > holdPosition - AutoConstants.wristTolerance && wristEncoder.getDistance() < holdPosition + AutoConstants.wristTolerance){
+      return true;
+    }
+
+    return false;
+  }
+
+  public double getHoldPosition(){
+    return holdPosition;
   }
 
   public double getWristEncoder(){

@@ -37,7 +37,7 @@ public class ArmCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveArm(speed.getAsDouble(), false, false, false, false, false, false, false, false);
+    armSubsystem.moveArmStick(speed.getAsDouble());
 
     SmartDashboard.putNumber("Arm Encoder Absolute Position: ", armSubsystem.getArmEncoder());
   }

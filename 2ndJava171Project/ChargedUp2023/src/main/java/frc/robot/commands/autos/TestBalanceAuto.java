@@ -4,10 +4,17 @@
 
 package frc.robot.commands.autos;
 
-import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.subsystems.*;
-import frc.robot.Constants.*;
-import frc.robot.commands.*;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.WristConstants;
+import frc.robot.commands.BalanceCommand;
+import frc.robot.commands.SetPreset;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.IntakeRollersSubsystem;
+import frc.robot.subsystems.TankDriveSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 
 /** An example command that uses an example subsystem. */
@@ -22,18 +29,18 @@ public class TestBalanceAuto extends SequentialCommandGroup {
   public TestBalanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
     addCommands(
         new SuckInCone(rollersSubsystem),
-        new Level3ScorePosition(wristSubsystem, armSubsystem),
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem), 
           new SpitOutCone(rollersSubsystem)),
         new ParallelRaceGroup(
-          new SafePosition(wristSubsystem, armSubsystem),
+          new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
           new DriveForwardAuto(driveSubsystem, AutoConstants.crossLineDistance)),
         new ParallelRaceGroup(
-          new SafePosition(wristSubsystem, armSubsystem),
+          new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
           new DriveForwardAuto(driveSubsystem, AutoConstants.backDistance)),
         new ParallelRaceGroup(
-            new CubePickupPosition(wristSubsystem, armSubsystem),
+          new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
             new BalanceCommand(driveSubsystem)
         )
     );

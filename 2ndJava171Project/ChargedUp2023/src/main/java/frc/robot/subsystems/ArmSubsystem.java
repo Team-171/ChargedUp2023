@@ -44,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
     holdPosition = armEncoder.getAbsolutePosition();
   }
 
-  public boolean moveArm(double speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe, boolean inputCone, boolean inputCube){
+  public boolean moveArmStick(double speed){
 
       if(Math.abs(speed) < ArmConstants.armDeadZone) {
             speed = 0;
@@ -53,42 +53,9 @@ public class ArmSubsystem extends SubsystemBase {
       speed = speed * 0.1;
       setpoint = speed + holdPosition;
 
-      if(aButton){
-        setpoint = ArmConstants.conePickupEncoderPosition;
-        holdPosition = ArmConstants.conePickupEncoderPosition;
-        aButton = false;
-      }else if(bButton){
-        setpoint = ArmConstants.thirdLevelEncoderPosition;
-        holdPosition = ArmConstants.thirdLevelEncoderPosition;
-        bButton = false;
-      }else if(xButton){
-        setpoint = ArmConstants.cubePickupEncoderPostion;
-        holdPosition = ArmConstants.cubePickupEncoderPostion;
-        xButton = false;
-      }else if(yButton){
-        setpoint = ArmConstants.secondLevelEncoderPosition;
-        holdPosition = ArmConstants.secondLevelEncoderPosition;
-        yButton = false;
-      }else if(inputCone){
-        setpoint = ArmConstants.inputConeEncoderPosition;
-        holdPosition = ArmConstants.inputConeEncoderPosition;
-        inputCone = false;
-      }else if(inputCube){
-        setpoint = ArmConstants.inputCubeEncoderPosition;
-        holdPosition = ArmConstants.inputCubeEncoderPosition;
-        inputCube = false;
-      }else if(reset){
-        setpoint = ArmConstants.reset;
-        holdPosition = ArmConstants.reset;
-        reset = false;
-      }else if(safe){
-        setpoint = ArmConstants.safe;
-        holdPosition = ArmConstants.safe;
-        safe = false;
-      }
-
       setPower = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), setpoint), -ArmConstants.armSpeed, ArmConstants.armSpeed);
-      if(speed != 0){holdPosition = armEncoder.getAbsolutePosition();}
+      if(speed != 0)
+        holdPosition = armEncoder.getAbsolutePosition();
       
       if(armEncoder.getAbsolutePosition() > ArmConstants.armLowHardStop && armEncoder.getAbsolutePosition() < ArmConstants.armHighHardStop){
         armMotor.set(setPower);
@@ -108,6 +75,26 @@ public class ArmSubsystem extends SubsystemBase {
       }
 
       return false;
+  }
+
+  public boolean moveArmButton(double position){
+    setpoint = position;
+    holdPosition = position;
+
+    setPower = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), setpoint), -ArmConstants.armSpeed, ArmConstants.armSpeed);
+
+    armMotor.set(setPower);
+    armMotor2.set(setPower);
+
+    if(armEncoder.getAbsolutePosition() > holdPosition - AutoConstants.armTolerance && armEncoder.getAbsolutePosition() < holdPosition + AutoConstants.armTolerance){
+      return true;
+    }
+
+    return false;
+  }
+
+  public double getHoldPosition(){
+    return holdPosition;
   }
 
   public double getArmEncoder(){

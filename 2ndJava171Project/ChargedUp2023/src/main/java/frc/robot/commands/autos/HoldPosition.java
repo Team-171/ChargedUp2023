@@ -20,8 +20,6 @@ public class HoldPosition extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
   private final ArmSubsystem armSubsystem;
-  private boolean wristFinished;
-  private boolean armFinished;
 
   /**
    * Creates a new ExampleCommand.
@@ -44,8 +42,8 @@ public class HoldPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armFinished = armSubsystem.moveArm(0, false, false, false, false, false, false, false, false);
-    wristFinished = wristSubsystem.moveWrist(0, false, false, false, false, false, false, false, false);
+    armSubsystem.moveArmStick(0);
+    wristSubsystem.moveWristStick(0);
 }
 
   // Called once the command ends or is interrupted.

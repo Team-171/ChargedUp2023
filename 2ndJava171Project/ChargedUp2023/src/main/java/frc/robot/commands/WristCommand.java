@@ -16,32 +16,16 @@ public class WristCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
   private DoubleSupplier speed;
-  boolean aButton;
-  boolean bButton;
-  boolean xButton;
-  boolean yButton;
-  boolean reset;
-  boolean safe;
-  boolean inputCone;
-  boolean inputCube;
+  private double position;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public WristCommand(WristSubsystem subsystem, DoubleSupplier speed, boolean aButton, boolean bButton, boolean xButton, boolean yButton, boolean reset, boolean safe, boolean inputCone, boolean inputCube) {
+  public WristCommand(WristSubsystem subsystem, DoubleSupplier speed) {
     wristSubsystem = subsystem;
     this.speed = speed;
-    this.aButton = aButton;
-    this.bButton = bButton;
-    this.xButton = xButton;
-    this.yButton = yButton;
-    this.reset = reset;
-    this.safe = safe;
-    this.inputCone = inputCone;
-    this.inputCube = inputCube;
-
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -54,7 +38,7 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    wristSubsystem.moveWrist(speed.getAsDouble(), aButton, bButton, xButton, yButton, reset, safe, inputCone, inputCube);
+    wristSubsystem.moveWristStick(speed.getAsDouble());
 
     SmartDashboard.putNumber("Wrist Encoder Distance: ", wristSubsystem.getWristEncoder());
   }

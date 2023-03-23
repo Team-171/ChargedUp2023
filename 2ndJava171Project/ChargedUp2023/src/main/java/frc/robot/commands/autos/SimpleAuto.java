@@ -25,12 +25,12 @@ public class SimpleAuto extends SequentialCommandGroup {
   public SimpleAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
     addCommands(
         new SuckInCone(rollersSubsystem),
-        new Level3ScorePosition(wristSubsystem, armSubsystem),
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem), 
           new SpitOutCone(rollersSubsystem)),
         new ParallelRaceGroup(
-          new SafePosition(wristSubsystem, armSubsystem),
+          new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
           new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward))    
     );
     

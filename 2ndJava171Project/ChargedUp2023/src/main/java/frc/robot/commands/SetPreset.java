@@ -4,27 +4,38 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.TankDriveSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /** An example command that uses an example subsystem. */
-public class ResetPosition extends CommandBase {
+public class SetPreset extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
   private final ArmSubsystem armSubsystem;
   private boolean wristFinished;
   private boolean armFinished;
 
+  private double armPosition;
+  private double wristPosition;
+
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ResetPosition(WristSubsystem subsystem, ArmSubsystem armSubsystem) {
+  public SetPreset(WristSubsystem subsystem, ArmSubsystem armSubsystem, double wristPosition, double armPosition) {
     wristSubsystem = subsystem;
     this.armSubsystem = armSubsystem;
+    this.armPosition = armPosition;
+    this.wristPosition = wristPosition;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -38,15 +49,13 @@ public class ResetPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armFinished = armSubsystem.moveArm(0, false, false, false, false, true, false, false, false);
-    wristFinished = wristSubsystem.moveWrist(0, false, false, false, false, true, false, false, false);
-  }
+    armFinished = armSubsystem.moveArmButton(armPosition);
+    wristFinished = wristSubsystem.moveWristButton(wristPosition);
+}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.moveArm(0, false, false, false, false, false, false, false, false);
-    wristSubsystem.moveWrist(0, false, false, false, false, false, false, false, false);
   }
 
   // Returns true when the command should end.
