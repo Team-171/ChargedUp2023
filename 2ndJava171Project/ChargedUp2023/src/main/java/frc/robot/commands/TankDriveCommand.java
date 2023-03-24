@@ -17,15 +17,18 @@ public class TankDriveCommand extends CommandBase {
   private final TankDriveSubsystem driveSubsystem;
   private DoubleSupplier forward;
   private DoubleSupplier rotation;
+  private boolean slowTurn;
+
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public TankDriveCommand(TankDriveSubsystem subsystem, DoubleSupplier forward, DoubleSupplier rotation) {
+  public TankDriveCommand(TankDriveSubsystem subsystem, DoubleSupplier forward, DoubleSupplier rotation, boolean slowTurn) {
     driveSubsystem = subsystem;
     this.forward = forward;
     this.rotation = rotation;
+    this.slowTurn = slowTurn;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -37,7 +40,7 @@ public class TankDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveSubsystem.arcadeDrive(forward.getAsDouble(), rotation.getAsDouble());
+    driveSubsystem.arcadeDrive(forward.getAsDouble(), rotation.getAsDouble(), slowTurn);
 
     SmartDashboard.putBoolean("AHRS Set Up: ", TankDriveSubsystem.setup);
   }

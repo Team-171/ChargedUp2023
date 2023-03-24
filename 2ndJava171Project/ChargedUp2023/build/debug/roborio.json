@@ -3,7 +3,7 @@
     "type": "java",
     "name": "frcJava",
     "port": 8349,
-    "target": "10.1.71.2",
+    "target": "169.254.137.6",
     "project": "ChargedUp2023"
   }
 ]

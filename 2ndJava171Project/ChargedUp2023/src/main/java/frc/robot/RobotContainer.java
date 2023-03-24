@@ -4,22 +4,7 @@
 
 package frc.robot;
 
-import javax.management.relation.RoleResult;
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.RamseteAutoBuilder;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -63,7 +48,7 @@ public class RobotContainer {
 
     // set the default command so that this will run constantly
     driveSubsystem.setDefaultCommand(
-      new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX()));
+      new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX(), false));
 
     rollersSubsystem.setDefaultCommand(
       new IntakeRollersCommand(rollersSubsystem, () -> operatorController.getRawAxis(OperatorConstants.rightTrigger) - operatorController.getRawAxis(OperatorConstants.leftTrigger)));
@@ -111,6 +96,7 @@ public class RobotContainer {
 
     driverController.rightBumper().onTrue(new GearShiftCommand(gearShiftSubsystem));
     driverController.x().whileTrue(new BalanceCommand(driveSubsystem));
+    driverController.leftBumper().whileTrue(new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX(), true));
   }
 
   

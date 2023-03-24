@@ -24,12 +24,17 @@ public final class Constants {
 
     public static final int driveMotorsCurrentLimit = 50;
     public static final double driveMotorsRampRate = 0.125;
-    public static final double balanceDeadZone = 2.0;
+    public static final double balanceDeadZone = 4.0;
 
     public static final int selectControllerbutton = 7;
     public static final int startControllerButton = 8;
+
+    public static final double defaultSpeed = 1.0;
+    public static final double slowSpeed = 0.3;
+    public static final double slowForward = 0.5;
   }
 
+  //increment wrist constants (maybe)
   public static class WristConstants {
     public static final int wristMotorID = 3;
     public static final int wristEncoderChannel = 1;
@@ -39,19 +44,19 @@ public final class Constants {
     public static final double wristPIDki = 0.05;
     public static final double wristPIDkd = 0.1;
     public static final double wristDeadZone = 0.1;
-    public static final double wristRoughMiddle = 0.2;
-    public static final double wristLowHardStop = -1.5;
-    public static final double wristHighHardStop = 1.45;
+    public static final double wristRoughMiddle = 0.43;
+    public static final double wristLowHardStop = -1.27;
+    public static final double wristHighHardStop = 1.68;
     public static final double wristSpeed = 0.75;
     public static final double wristReturnSpeed = 0.25;
-    public static final double conePickupEncoderPosition = 0.656;
-    public static final double thirdLevelEncoderPosition = -0.9;
-    public static final double cubePickupEncoderPosition = 0.464;
-    public static final double secondLevelEncoderPosition = -0.44;
-    public static final double inputConeEncoderPosition = -0.9;
-    public static final double inputCubeEncoderPosition = -0.9;
-    public static final double reset = 0.42; 
-    public static final double safe = 0.25;
+    public static final double conePickupEncoderPosition = 0.886;
+    public static final double thirdLevelEncoderPosition = -0.67;
+    public static final double cubePickupEncoderPosition = 0.694;
+    public static final double secondLevelEncoderPosition = -0.21;
+    public static final double inputConeEncoderPosition = -0.47;
+    public static final double inputCubeEncoderPosition = -0.525;
+    public static final double reset = 0.65; 
+    public static final double safe = 0.48;
   }
 
   public static class RollerConstants {
@@ -79,36 +84,38 @@ public final class Constants {
     public static final double armPIDki = 0.1;
     public static final double armPIDkd = 0.1;
     public static final double armDeadZone = 0.1;
-    public static final double armRoughMiddle = 0.16;
-    public static final double armLowHardStop = 0.03;
-    public static final double armHighHardStop = 0.45;
+    public static final double armRoughMiddle = 0.32;
+    public static final double armLowHardStop = 0.19;
+    public static final double armHighHardStop = 0.61;
     public static final double armSpeed = 0.75;
     public static final double armReturnSpeed = 0.25;
-    public static final double conePickupEncoderPosition = 0.055;
-    public static final double thirdLevelEncoderPosition = 0.4;
-    public static final double cubePickupEncoderPostion = 0.057;
-    public static final double secondLevelEncoderPosition = 0.38;
-    public static final double inputConeEncoderPosition = 0.425;
-    public static final double inputCubeEncoderPosition = 0.425;
-    public static final double reset = 0.217;
-    public static final double safe = 0.25; 
+    public static final double conePickupEncoderPosition = 0.215;
+    public static final double thirdLevelEncoderPosition = 0.56;
+    public static final double cubePickupEncoderPostion = 0.217;
+    public static final double secondLevelEncoderPosition = 0.54;
+    public static final double inputConeEncoderPosition = 0.55;
+    public static final double inputCubeEncoderPosition = 0.57;
+    public static final double reset = 0.36;
+    public static final double safe = 0.41; 
   }
 
   public static class PneumaticConstants {
     public static final double minPressure = 40;
-    public static final double maxPressure = 120;
+    public static final double maxPressure = 110;
     public static final int forwardChannel = 0;
     public static final int reverseChannel = 1;
     public static final int moduleID = 1; 
   }
 
   public static class AutoConstants {
-    public static final double distanceForward = 8;
-    public static final double balanceDistanceForward = 2.5;
-    public static final double crossLineDistance = 8;
-    public static final double backDistance = 4.5;
+    public static final double distanceForward = 7.75;
+    public static final double balanceDistanceForward = 4;
+    public static final double crossLineDistance = 8.1;
+    public static final double backDistance = 4.6;
     public static final double armTolerance = 0.025;
     public static final double wristTolerance = 0.025;
     public static final double driveTolerance = 0.025;
+    public static final double driveForwardSpeed = 0.75;
+    public static final double driveBackwardSpeed = 0.5;
   }
 }

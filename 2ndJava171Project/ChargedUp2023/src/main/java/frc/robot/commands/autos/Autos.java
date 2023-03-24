@@ -12,7 +12,6 @@ import frc.robot.Constants.AutoConstants;
 
 import java.time.chrono.ThaiBuddhistChronology;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public final class Autos {

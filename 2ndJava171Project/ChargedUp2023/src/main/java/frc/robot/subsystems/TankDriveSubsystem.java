@@ -13,16 +13,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
-
-import java.util.regex.MatchResult;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
@@ -45,8 +39,6 @@ public class TankDriveSubsystem extends SubsystemBase {
     new DifferentialDriveKinematics(Units.inchesToMeters(23));
   private DifferentialDriveWheelSpeeds wheelSpeeds = 
     new DifferentialDriveWheelSpeeds(1.6, 1.6);
-  private ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(wheelSpeeds);
-
 
   private AHRS ahrs;
 
@@ -58,6 +50,9 @@ public class TankDriveSubsystem extends SubsystemBase {
 
   private PIDController drivePid;
   private PIDController balancePid;
+
+  public double turnMultiplier;
+  public double forwardMultiplier;
 
   /** Creates a new ExampleSubsystem. */
   public TankDriveSubsystem() {
@@ -105,6 +100,7 @@ public class TankDriveSubsystem extends SubsystemBase {
     leftLeadMotor.getEncoder().setPositionConversionFactor(0.0416666666666667);
     rightLeadMotor.getEncoder().setPositionConversionFactor(0.0416666666666667);
 
+
     ahrs = new AHRS();
 
     m_odometry = new DifferentialDriveOdometry(
@@ -115,14 +111,27 @@ public class TankDriveSubsystem extends SubsystemBase {
     m_field = new Field2d();
     m_pose = new Pose2d();
 
+    turnMultiplier = DriveConstants.defaultSpeed;
+    forwardMultiplier = DriveConstants.defaultSpeed;
+
+
     SmartDashboard.putData("Field: ", m_field);
     
     drivePid = new PIDController(3, 0.5, 0.5);
-    balancePid = new PIDController(0.6, 4, 1);
+    // not used right now
+    balancePid = new PIDController(.6, 3, 7);
   }
 
-  public void arcadeDrive(double forward, double rotation){
-    roboDrive.arcadeDrive(forward, rotation);
+  public void arcadeDrive(double forward, double rotation, Boolean slowTurn){
+    if(slowTurn){
+      turnMultiplier = DriveConstants.slowSpeed;
+      forwardMultiplier = DriveConstants.slowForward;
+    }
+
+    roboDrive.arcadeDrive(forward * forwardMultiplier, rotation * turnMultiplier);
+
+    turnMultiplier = DriveConstants.defaultSpeed;
+    forwardMultiplier = DriveConstants.defaultSpeed;
   }
 
   public boolean driveForward(double length){
@@ -130,7 +139,7 @@ public class TankDriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Left Encoder:" , leftLeadMotor.getEncoder().getPosition());
     SmartDashboard.putNumber("Length: ", length);
     
-    roboDrive.arcadeDrive(MathUtil.clamp(drivePid.calculate(leftLeadMotor.getEncoder().getPosition(), length), -0.5, 0.5), 0);
+    roboDrive.arcadeDrive(MathUtil.clamp(drivePid.calculate(leftLeadMotor.getEncoder().getPosition(), length), -0.75, 0.75), 0);
 
     if(leftLeadMotor.getEncoder().getPosition() > length - AutoConstants.driveTolerance && leftLeadMotor.getEncoder().getPosition() < length + AutoConstants.driveTolerance){
       return true;
@@ -144,8 +153,17 @@ public class TankDriveSubsystem extends SubsystemBase {
   }
 
   public void balance(){
-    if(ahrs.getRoll() > DriveConstants.balanceDeadZone || ahrs.getRoll() < -DriveConstants.balanceDeadZone){
-      roboDrive.arcadeDrive(-MathUtil.clamp(balancePid.calculate(ahrs.getRoll(), 0), -0.5, 0.5), 0);
+    // if(ahrs.getRoll() > DriveConstants.balanceDeadZone || ahrs.getRoll() < -DriveConstants.balanceDeadZone){
+    //   roboDrive.arcadeDrive(-MathUtil.clamp(balancePid.calculate(ahrs.getRoll(), 0), -0.4, 0.4), 0);
+    // }else{
+    //   roboDrive.arcadeDrive(0, 0);
+    //   Timer.delay(1);
+    // }
+
+    if(ahrs.getRoll() > DriveConstants.balanceDeadZone){
+      roboDrive.arcadeDrive(0.25, 0);
+    }else if(ahrs.getRoll() < -DriveConstants.balanceDeadZone){
+      roboDrive.arcadeDrive(-0.25, 0);
     }else{
       roboDrive.arcadeDrive(0, 0);
     }
@@ -156,6 +174,10 @@ public class TankDriveSubsystem extends SubsystemBase {
    
     SmartDashboard.putNumber("Left Drive Speed: ", leftLeadMotor.get());
     SmartDashboard.putNumber("Right Drive Speed: ", rightLeadMotor.get());
+
+    SmartDashboard.putNumber("Gyro Pitch: ", ahrs.getPitch());
+    SmartDashboard.putNumber("Gyro Roll: ", ahrs.getRoll());
+    SmartDashboard.putNumber("Gyro Yaw: ", ahrs.getYaw());
 
     var gyroAngle = ahrs.getRotation2d();
 

@@ -16,7 +16,6 @@ public class WristCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
   private DoubleSupplier speed;
-  private double position;
 
   /**
    * Creates a new ExampleCommand.

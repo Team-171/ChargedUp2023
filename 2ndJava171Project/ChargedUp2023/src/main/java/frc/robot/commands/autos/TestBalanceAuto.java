@@ -33,15 +33,17 @@ public class TestBalanceAuto extends SequentialCommandGroup {
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem), 
           new SpitOutCone(rollersSubsystem)),
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset),
         new ParallelRaceGroup(
-          new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
+          new HoldPosition(wristSubsystem, armSubsystem),
           new DriveForwardAuto(driveSubsystem, AutoConstants.crossLineDistance)),
         new ParallelRaceGroup(
-          new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
+          new HoldPosition(wristSubsystem, armSubsystem),
           new DriveForwardAuto(driveSubsystem, AutoConstants.backDistance)),
+        // new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
         new ParallelRaceGroup(
-          new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
-            new BalanceCommand(driveSubsystem)
+          new HoldPosition(wristSubsystem, armSubsystem),
+          new BalanceCommand(driveSubsystem)
         )
     );
     
