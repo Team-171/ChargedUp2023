@@ -30,7 +30,6 @@ public class BalanceAuto extends SequentialCommandGroup {
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
           new DriveForwardAuto(driveSubsystem, AutoConstants.balanceDistanceForward)),
-        // new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
           new BalanceCommand(driveSubsystem)

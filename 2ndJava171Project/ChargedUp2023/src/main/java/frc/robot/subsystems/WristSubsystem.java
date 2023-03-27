@@ -53,17 +53,13 @@ public class WristSubsystem extends SubsystemBase {
     setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
     if(speed != 0)
       holdPosition = wristEncoder.getDistance();
-
+    
     if(wristEncoder.getDistance() > WristConstants.wristLowHardStop && wristEncoder.getDistance() < WristConstants.wristHighHardStop){
       wristMotor.set(setPower);
     }else{
       setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), WristConstants.wristRoughMiddle), -WristConstants.wristReturnSpeed, WristConstants.wristReturnSpeed);
       wristMotor.set(setPower);
     }
-
-    SmartDashboard.putNumber("Wrist PID Output: ", setPower);
-    SmartDashboard.putNumber("Wrist Speed: ", wristMotor.get());
-    SmartDashboard.putNumber("Wrist Hold Distance: ", holdPosition);
 
     if(wristEncoder.getDistance() > holdPosition - AutoConstants.wristTolerance && wristEncoder.getDistance() < holdPosition + AutoConstants.wristTolerance){
       return true;
@@ -97,6 +93,10 @@ public class WristSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("Wrist PID Output: ", setPower);
+    SmartDashboard.putNumber("Wrist Speed: ", wristMotor.get());
+    SmartDashboard.putNumber("Wrist Hold Distance: ", holdPosition);
     // This method will be called once per scheduler run
   }
 

@@ -66,10 +66,7 @@ public class ArmSubsystem extends SubsystemBase {
         armMotor2.set(setPower);
       }
 
-      SmartDashboard.putNumber("Arm PID Output: ", setPower);
-      SmartDashboard.putNumber("Both Arm Motor Speed: ", armMotor.get());
-      SmartDashboard.putNumber("Arm Hold Position: ", holdPosition);
-
+      // might not need this, but keep for now
       if(armEncoder.getAbsolutePosition() > holdPosition - AutoConstants.armTolerance && armEncoder.getAbsolutePosition() < holdPosition + AutoConstants.armTolerance){
         return true;
       }
@@ -101,13 +98,12 @@ public class ArmSubsystem extends SubsystemBase {
     return armEncoder.getDistance();
   }
 
-  public void setArmPreset() {
-
-  }
-
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Arm PID Output: ", setPower);
+    SmartDashboard.putNumber("Both Arm Motor Speed: ", armMotor.get());
+    SmartDashboard.putNumber("Arm Hold Position: ", holdPosition);
   }
 
   @Override

@@ -3,7 +3,7 @@
     "type": "java",
     "name": "frcJava",
     "port": 8349,
-    "target": "169.254.137.6",
+    "target": "roborio-171-FRC",
     "project": "ChargedUp2023"
   }
 ]

@@ -24,7 +24,7 @@ public final class Constants {
 
     public static final int driveMotorsCurrentLimit = 50;
     public static final double driveMotorsRampRate = 0.125;
-    public static final double balanceDeadZone = 4.0;
+    public static final double balanceDeadZone = 3.0;
 
     public static final int selectControllerbutton = 7;
     public static final int startControllerButton = 8;
@@ -32,9 +32,11 @@ public final class Constants {
     public static final double defaultSpeed = 1.0;
     public static final double slowSpeed = 0.3;
     public static final double slowForward = 0.5;
+
+    public static final int rightTrigger = 2;
+    public static final int leftTrigger = 3;
   }
 
-  //increment wrist constants (maybe)
   public static class WristConstants {
     public static final int wristMotorID = 3;
     public static final int wristEncoderChannel = 1;
@@ -50,11 +52,11 @@ public final class Constants {
     public static final double wristSpeed = 0.75;
     public static final double wristReturnSpeed = 0.25;
     public static final double conePickupEncoderPosition = 0.886;
-    public static final double thirdLevelEncoderPosition = -0.67;
+    public static final double thirdLevelEncoderPosition = -0.93;
     public static final double cubePickupEncoderPosition = 0.694;
     public static final double secondLevelEncoderPosition = -0.21;
-    public static final double inputConeEncoderPosition = -0.47;
-    public static final double inputCubeEncoderPosition = -0.525;
+    public static final double inputConeEncoderPosition = -0.74;
+    public static final double inputCubeEncoderPosition = -0.92;
     public static final double reset = 0.65; 
     public static final double safe = 0.48;
   }
@@ -87,14 +89,14 @@ public final class Constants {
     public static final double armRoughMiddle = 0.32;
     public static final double armLowHardStop = 0.19;
     public static final double armHighHardStop = 0.61;
-    public static final double armSpeed = 0.75;
+    public static final double armSpeed = 0.5;
     public static final double armReturnSpeed = 0.25;
     public static final double conePickupEncoderPosition = 0.215;
-    public static final double thirdLevelEncoderPosition = 0.56;
+    public static final double thirdLevelEncoderPosition = 0.57;
     public static final double cubePickupEncoderPostion = 0.217;
     public static final double secondLevelEncoderPosition = 0.54;
-    public static final double inputConeEncoderPosition = 0.55;
-    public static final double inputCubeEncoderPosition = 0.57;
+    public static final double inputConeEncoderPosition = 0.56;
+    public static final double inputCubeEncoderPosition = 0.58;
     public static final double reset = 0.36;
     public static final double safe = 0.41; 
   }
@@ -112,8 +114,8 @@ public final class Constants {
     public static final double balanceDistanceForward = 4;
     public static final double crossLineDistance = 8.1;
     public static final double backDistance = 4.6;
-    public static final double armTolerance = 0.025;
-    public static final double wristTolerance = 0.025;
+    public static final double armTolerance = 0.02;
+    public static final double wristTolerance = 0.02;
     public static final double driveTolerance = 0.025;
     public static final double driveForwardSpeed = 0.75;
     public static final double driveBackwardSpeed = 0.5;

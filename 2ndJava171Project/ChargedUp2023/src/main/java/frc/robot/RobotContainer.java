@@ -51,13 +51,15 @@ public class RobotContainer {
       new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX(), false));
 
     rollersSubsystem.setDefaultCommand(
-      new IntakeRollersCommand(rollersSubsystem, () -> operatorController.getRawAxis(OperatorConstants.rightTrigger) - operatorController.getRawAxis(OperatorConstants.leftTrigger)));
+      new IntakeRollersCommand(rollersSubsystem, () -> driverController.getRawAxis(DriveConstants.rightTrigger) - driverController.getRawAxis(DriveConstants.leftTrigger)));
     
+    // essentially hold the position for the arm
     armSubsystem.setDefaultCommand(
-      new ArmCommand(armSubsystem, () -> operatorController.getLeftY()));
-      
+      new ArmCommand(armSubsystem, () -> 0));
+    
+    // essentially hold the position for the wrist
     wristSubsystem.setDefaultCommand(
-      new WristCommand(wristSubsystem, () -> operatorController.getRightY()));
+      new WristCommand(wristSubsystem, () -> 0));
 
     // Change the objects to Commands
     autoChooser = new SendableChooser<>();
@@ -83,20 +85,21 @@ public class RobotContainer {
    */
   private void configureBindings() {
     operatorController.a().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.conePickupEncoderPosition, ArmConstants.conePickupEncoderPosition));
-    operatorController.pov(0).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition));
     operatorController.x().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion));
     operatorController.pov(90).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
     operatorController.pov(270).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
-
-    operatorController.b().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputConeEncoderPosition, ArmConstants.inputConeEncoderPosition));
-    operatorController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputCubeEncoderPosition, ArmConstants.inputCubeEncoderPosition));
+    //operatorController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputCubeEncoderPosition, ArmConstants.inputCubeEncoderPosition));
   
-    operatorController.leftBumper().or(operatorController.rightBumper()).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe));
     operatorController.button(DriveConstants.selectControllerbutton).or(operatorController.button(DriveConstants.startControllerButton)).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset));
+
+    driverController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition));
+    driverController.b().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputConeEncoderPosition, ArmConstants.inputConeEncoderPosition));
+    driverController.a().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe));
 
     driverController.rightBumper().onTrue(new GearShiftCommand(gearShiftSubsystem));
     driverController.x().whileTrue(new BalanceCommand(driveSubsystem));
     driverController.leftBumper().whileTrue(new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX(), true));
+
   }
 
   
