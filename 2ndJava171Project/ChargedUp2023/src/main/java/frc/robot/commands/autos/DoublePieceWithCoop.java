@@ -22,21 +22,34 @@ public class DoublePieceWithCoop extends SequentialCommandGroup {
    */
   public DoublePieceWithCoop(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
     addCommands(
-        // suck in with less power
+        // suck in with less power and combine with set preset possibly to save time
+        // can drive forward faster if need be for time
         new SuckInCone(rollersSubsystem),
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem), 
           new SpitOutCone(rollersSubsystem)),
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
-        // go forward a bit 
-        // turn to the left
-        // go forward 4 feet
-        // turn to the right
-        // go forward X (leave 9.5 inches for fall down)
-        // suck up cube
-        // go back X
-        // spit cube third level
+        new DriveForwardAuto(driveSubsystem, AutoConstants.clearFlushForTurnDistance, false),
+        new TurnAuto(driveSubsystem, -90, false),
+        new DriveForwardAuto(driveSubsystem, AutoConstants.driveForwardFourFt, false),
+        new TurnAuto(driveSubsystem, 90, false),
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
+        new ParallelRaceGroup(
+          new HoldPosition(wristSubsystem, armSubsystem),
+          new DriveForwardAuto(driveSubsystem, AutoConstants.driveForwardLongDistance, false),
+          new SuckInCubeLong(rollersSubsystem)
+        ),
+        new ParallelRaceGroup(
+          new HoldPosition(wristSubsystem, armSubsystem),
+          new DriveForwardAuto(driveSubsystem, -(AutoConstants.driveForwardLongDistance + AutoConstants.clearFlushForTurnDistance), false)
+        ),
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
+        new ParallelRaceGroup(
+          new HoldPosition(wristSubsystem, armSubsystem),
+          new SpitOutCube(rollersSubsystem)
+        ),
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
           new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward, false))    

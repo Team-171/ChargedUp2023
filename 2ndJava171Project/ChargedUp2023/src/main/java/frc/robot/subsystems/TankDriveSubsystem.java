@@ -54,6 +54,8 @@ public class TankDriveSubsystem extends SubsystemBase {
   public double turnMultiplier;
   public double forwardMultiplier;
 
+  public double currentHeading;
+
   /** Creates a new ExampleSubsystem. */
   public TankDriveSubsystem() {
     leftLeadMotor = new CANSparkMax(DriveConstants.leftLeadDeviceID, MotorType.kBrushless);
@@ -112,6 +114,8 @@ public class TankDriveSubsystem extends SubsystemBase {
     m_field = new Field2d();
     m_pose = new Pose2d();
 
+    currentHeading = ahrs.getYaw();
+
     turnMultiplier = DriveConstants.defaultSpeed;
     forwardMultiplier = DriveConstants.defaultSpeed;
 
@@ -152,6 +156,29 @@ public class TankDriveSubsystem extends SubsystemBase {
     }
 
     return false;
+  }
+
+  public boolean turn(double turnDegrees, boolean slowMode){
+    if(slowMode){
+      turnMultiplier = DriveConstants.slowForward;
+    }
+
+    double newHeading = currentHeading + turnDegrees;
+
+    roboDrive.arcadeDrive(0, MathUtil.clamp(drivePid.calculate(ahrs.getYaw(), newHeading), -.75, .75) * turnMultiplier);
+
+    turnMultiplier = DriveConstants.defaultSpeed;
+
+    if(ahrs.getYaw() > newHeading - AutoConstants.turnToleranceForYaw && ahrs.getYaw() < newHeading + AutoConstants.turnToleranceForYaw){
+      return true;
+    }
+    
+    return false;
+    
+  }
+
+  public void resetYaw(){
+    currentHeading = ahrs.getYaw();
   }
 
   public void setup(){

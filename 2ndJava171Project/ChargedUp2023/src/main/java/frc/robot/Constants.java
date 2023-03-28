@@ -127,5 +127,9 @@ public final class Constants {
     public static final double driveForwardSpeed = 0.75;
     public static final double driveBackwardSpeed = 0.5;
     public static final double grabConeDistance = 9;
+    public static final double clearFlushForTurnDistance = 7.64; // 6 inches
+    public static final double turnToleranceForYaw = 1.0;
+    public static final double driveForwardFourFt = 61.11; // 4 ft
+    public static final double driveForwardLongDistance = 236.82; //186 inches
   }
 }
