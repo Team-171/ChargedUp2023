@@ -65,7 +65,8 @@ public class RobotContainer {
     autoChooser = new SendableChooser<>();
     autoChooser.addOption("Forward Auto", Autos.driveForwardAuto(driveSubsystem));
     autoChooser.addOption("Balance Auto", Autos.balanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
-    autoChooser.addOption("Test Balance Auto", Autos.testBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
+    autoChooser.addOption("21 Point Balance Auto", Autos.testBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
+    autoChooser.addOption("Double Cone Auto", Autos.doubleConeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     autoChooser.setDefaultOption("Simple Auto", Autos.simpleAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     SmartDashboard.putData(autoChooser);
     

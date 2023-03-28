@@ -29,7 +29,7 @@ public class BalanceAuto extends SequentialCommandGroup {
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
-          new DriveForwardAuto(driveSubsystem, AutoConstants.balanceDistanceForward)),
+          new DriveForwardAuto(driveSubsystem, AutoConstants.balanceDistanceForward, false)),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
           new BalanceCommand(driveSubsystem)

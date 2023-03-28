@@ -97,9 +97,10 @@ public class TankDriveSubsystem extends SubsystemBase {
 
     leftLeadMotor.getEncoder().setPosition(0);
     rightLeadMotor.getEncoder().setPosition(0);
-    leftLeadMotor.getEncoder().setPositionConversionFactor(0.0416666666666667);
-    rightLeadMotor.getEncoder().setPositionConversionFactor(0.0416666666666667);
 
+    leftLeadMotor.getEncoder().setPositionConversionFactor(0.7854166666666673);
+    rightLeadMotor.getEncoder().setPositionConversionFactor(0.7854166666666673);
+    //One rotation is 0.78 inches
 
     ahrs = new AHRS();
 
@@ -134,12 +135,17 @@ public class TankDriveSubsystem extends SubsystemBase {
     forwardMultiplier = DriveConstants.defaultSpeed;
   }
 
-  public boolean driveForward(double length){
+  public boolean driveForward(double length, boolean slowMode){
+    if(slowMode){
+      forwardMultiplier = DriveConstants.slowForward;
+    }
 
     SmartDashboard.putNumber("Left Encoder:" , leftLeadMotor.getEncoder().getPosition());
     SmartDashboard.putNumber("Length: ", length);
     
-    roboDrive.arcadeDrive(MathUtil.clamp(drivePid.calculate(leftLeadMotor.getEncoder().getPosition(), length), -0.75, 0.75), 0);
+    roboDrive.arcadeDrive(MathUtil.clamp(drivePid.calculate(leftLeadMotor.getEncoder().getPosition(), length), -0.75, 0.75) * forwardMultiplier, 0);
+
+    forwardMultiplier = DriveConstants.defaultSpeed;
 
     if(leftLeadMotor.getEncoder().getPosition() > length - AutoConstants.driveTolerance && leftLeadMotor.getEncoder().getPosition() < length + AutoConstants.driveTolerance){
       return true;

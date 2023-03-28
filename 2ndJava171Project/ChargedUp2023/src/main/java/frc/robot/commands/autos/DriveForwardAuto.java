@@ -14,15 +14,18 @@ public class DriveForwardAuto extends CommandBase {
   private final TankDriveSubsystem driveSubsystem;
   private double distance;
   private boolean finished;
+  private boolean slow;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveForwardAuto(TankDriveSubsystem subsystem, double distance) {
+  public DriveForwardAuto(TankDriveSubsystem subsystem, double distance, boolean slow) {
     driveSubsystem = subsystem;
     this.distance = distance;
+    this.slow = slow;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -34,7 +37,7 @@ public class DriveForwardAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    finished = driveSubsystem.driveForward(distance);
+    finished = driveSubsystem.driveForward(distance, slow);
   }
 
   // Called once the command ends or is interrupted.

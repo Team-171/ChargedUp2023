@@ -57,6 +57,7 @@ public final class Constants {
     public static final double secondLevelEncoderPosition = -0.21;
     public static final double inputConeEncoderPosition = -0.74;
     public static final double inputCubeEncoderPosition = -0.92;
+    public static final double standingConePosition = 0.43;
     public static final double reset = 0.65; 
     public static final double safe = 0.48;
   }
@@ -97,6 +98,7 @@ public final class Constants {
     public static final double secondLevelEncoderPosition = 0.54;
     public static final double inputConeEncoderPosition = 0.56;
     public static final double inputCubeEncoderPosition = 0.58;
+    public static final double standingConePosition = 0.32;
     public static final double reset = 0.36;
     public static final double safe = 0.41; 
   }
@@ -110,14 +112,20 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double distanceForward = 7.75;
-    public static final double balanceDistanceForward = 4;
-    public static final double crossLineDistance = 8.1;
-    public static final double backDistance = 4.6;
+    //Multiply wanted inches by conversion factor (0.7854166666666673)
+
+    public static final double startingPosition = 0;
+    public static final double distanceForward = 179; //140
+    public static final double balanceDistanceForward = 115; //90
+    public static final double slowBalanceDistance = 115; //90
+    public static final double crossLineDistance = 185; //145
+    public static final double backDistance = 150; //118
+    public static final double secondConeDistance = 243; //189
     public static final double armTolerance = 0.02;
     public static final double wristTolerance = 0.02;
     public static final double driveTolerance = 0.025;
     public static final double driveForwardSpeed = 0.75;
     public static final double driveBackwardSpeed = 0.5;
+    public static final double grabConeDistance = 9;
   }
 }

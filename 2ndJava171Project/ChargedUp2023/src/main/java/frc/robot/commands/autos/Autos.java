@@ -10,15 +10,13 @@ import frc.robot.subsystems.TankDriveSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.Constants.AutoConstants;
 
-import java.time.chrono.ThaiBuddhistChronology;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public final class Autos {
 
   /** Example static factory for an autonomous command. */
   public static CommandBase driveForwardAuto(TankDriveSubsystem driveSubsystem) {
-    return new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward);
+    return new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward, false);
   }
 
   public static CommandBase simpleAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
@@ -31,6 +29,10 @@ public final class Autos {
 
   public static CommandBase testBalanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
     return new TestBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
+  }
+
+  public static CommandBase doubleConeAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
+    return new DoubleConeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }
 
   private Autos() {

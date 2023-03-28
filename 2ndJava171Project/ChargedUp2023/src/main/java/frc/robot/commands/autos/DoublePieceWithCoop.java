@@ -12,7 +12,7 @@ import frc.robot.commands.*;
 
 
 /** An example command that uses an example subsystem. */
-public class SimpleAuto extends SequentialCommandGroup {
+public class DoublePieceWithCoop extends SequentialCommandGroup {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   /**
@@ -20,14 +20,23 @@ public class SimpleAuto extends SequentialCommandGroup {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SimpleAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
+  public DoublePieceWithCoop(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
     addCommands(
+        // suck in with less power
         new SuckInCone(rollersSubsystem),
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem), 
           new SpitOutCone(rollersSubsystem)),
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
+        // go forward a bit 
+        // turn to the left
+        // go forward 4 feet
+        // turn to the right
+        // go forward X (leave 9.5 inches for fall down)
+        // suck up cube
+        // go back X
+        // spit cube third level
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
           new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward, false))    

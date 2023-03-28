@@ -16,36 +16,37 @@ import frc.robot.subsystems.IntakeRollersSubsystem;
 import frc.robot.subsystems.TankDriveSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
-
 /** An example command that uses an example subsystem. */
 public class TestBalanceAuto extends SequentialCommandGroup {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public TestBalanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
+  public TestBalanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem,
+      IntakeRollersSubsystem rollersSubsystem) {
     addCommands(
         new SuckInCone(rollersSubsystem),
-        new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition,
+            ArmConstants.thirdLevelEncoderPosition),
         new ParallelRaceGroup(
-          new HoldPosition(wristSubsystem, armSubsystem), 
-          new SpitOutCone(rollersSubsystem)),
+            new HoldPosition(wristSubsystem, armSubsystem),
+            new SpitOutCone(rollersSubsystem)),
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset),
         new ParallelRaceGroup(
-          new HoldPosition(wristSubsystem, armSubsystem),
-          new DriveForwardAuto(driveSubsystem, AutoConstants.crossLineDistance)),
+            new HoldPosition(wristSubsystem, armSubsystem),
+            new DriveForwardAuto(driveSubsystem, AutoConstants.slowBalanceDistance, true)),
         new ParallelRaceGroup(
-          new HoldPosition(wristSubsystem, armSubsystem),
-          new DriveForwardAuto(driveSubsystem, AutoConstants.backDistance)),
-        // new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
+            new HoldPosition(wristSubsystem, armSubsystem),
+            new DriveForwardAuto(driveSubsystem, AutoConstants.crossLineDistance, false)),
         new ParallelRaceGroup(
-          new HoldPosition(wristSubsystem, armSubsystem),
-          new BalanceCommand(driveSubsystem)
-        )
-    );
-    
+            new HoldPosition(wristSubsystem, armSubsystem),
+            new DriveForwardAuto(driveSubsystem, AutoConstants.backDistance, false)),
+        new ParallelRaceGroup(
+            new HoldPosition(wristSubsystem, armSubsystem),
+            new BalanceCommand(driveSubsystem)));
+
   }
 }
