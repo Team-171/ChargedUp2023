@@ -6,14 +6,12 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeRollersSubsystem;
-import edu.wpi.first.wpilibj.Timer;
 
 /** An example command that uses an example subsystem. */
 public class SuckInCubeLong extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final IntakeRollersSubsystem rollersSubsystem;
 
-  private double startTime;
 
   /**
    * Creates a new ExampleCommand.

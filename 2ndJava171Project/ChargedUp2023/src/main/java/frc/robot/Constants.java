@@ -46,20 +46,21 @@ public final class Constants {
     public static final double wristPIDki = 0.05;
     public static final double wristPIDkd = 0.1;
     public static final double wristDeadZone = 0.1;
-    public static final double wristRoughMiddle = 0.43;
-    public static final double wristLowHardStop = -1.27;
-    public static final double wristHighHardStop = 1.68;
+    public static final double wristRoughMiddle = 0.24;
+    public static final double wristLowHardStop = -0.8;
+    public static final double wristHighHardStop = 0.2;
     public static final double wristSpeed = 0.75;
     public static final double wristReturnSpeed = 0.25;
-    public static final double conePickupEncoderPosition = 0.886;
-    public static final double thirdLevelEncoderPosition = -0.93;
-    public static final double cubePickupEncoderPosition = 0.694;
-    public static final double secondLevelEncoderPosition = -0.21;
-    public static final double inputConeEncoderPosition = -0.74;
-    public static final double inputCubeEncoderPosition = -0.92;
-    public static final double standingConePosition = 0.43;
-    public static final double reset = 0.65; 
-    public static final double safe = 0.48;
+    public static final double conePickupEncoderPosition = 0.16;
+    public static final double thirdLevelEncoderPosition = -0.48;
+    public static final double cubePickupEncoderPosition = 0.07;
+    public static final double secondLevelEncoderPosition = -0.45;
+    public static final double inputConeEncoderPosition = -0.42;
+    public static final double inputCubeEncoderPosition = -0.55;
+    public static final double standingConePosition = -0.07;
+    public static final double reset = 0.07; 
+    public static final double safe = -0;
+    public static final double absoluteRoughMiddle = 0.5;
   }
 
   public static class RollerConstants {
@@ -92,15 +93,15 @@ public final class Constants {
     public static final double armHighHardStop = 0.61;
     public static final double armSpeed = 0.5;
     public static final double armReturnSpeed = 0.25;
-    public static final double conePickupEncoderPosition = 0.215;
-    public static final double thirdLevelEncoderPosition = 0.57;
-    public static final double cubePickupEncoderPostion = 0.217;
-    public static final double secondLevelEncoderPosition = 0.54;
-    public static final double inputConeEncoderPosition = 0.56;
-    public static final double inputCubeEncoderPosition = 0.58;
+    public static final double conePickupEncoderPosition = 0.21;
+    public static final double thirdLevelEncoderPosition = 0.555;
+    public static final double cubePickupEncoderPostion = 0.195;
+    public static final double secondLevelEncoderPosition = 0.57;
+    public static final double inputConeEncoderPosition = 0.55;
+    public static final double inputCubeEncoderPosition = 0.59;
     public static final double standingConePosition = 0.32;
     public static final double reset = 0.36;
-    public static final double safe = 0.41; 
+    public static final double safe = 0.375;
   }
 
   public static class PneumaticConstants {

@@ -37,10 +37,10 @@ public class TestBalanceAuto extends SequentialCommandGroup {
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset),
         new ParallelRaceGroup(
             new HoldPosition(wristSubsystem, armSubsystem),
-            new DriveForwardAuto(driveSubsystem, AutoConstants.slowBalanceDistance, true)),
+            new DriveForwardAuto(driveSubsystem, AutoConstants.slowBalanceDistance, false)),
         new ParallelRaceGroup(
             new HoldPosition(wristSubsystem, armSubsystem),
-            new DriveForwardAuto(driveSubsystem, AutoConstants.crossLineDistance, false)),
+            new DriveForwardAuto(driveSubsystem, AutoConstants.crossLineDistance, true)),
         new ParallelRaceGroup(
             new HoldPosition(wristSubsystem, armSubsystem),
             new DriveForwardAuto(driveSubsystem, AutoConstants.backDistance, false)),

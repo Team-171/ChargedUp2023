@@ -26,6 +26,7 @@ public class WristSubsystem extends SubsystemBase {
   double setpoint;
   double setPower;
   double holdPosition;
+  double offsetPosition;
 
   /** Creates a new ExampleSubsystem. */
   public WristSubsystem() {
@@ -38,7 +39,17 @@ public class WristSubsystem extends SubsystemBase {
     pid = new PIDController(WristConstants.wristPIDkp, WristConstants.wristPIDki, WristConstants.wristPIDkd);
 
     setPower = 0;
-    holdPosition = wristEncoder.getDistance();
+
+    wristEncoder.reset(); 
+
+    // everytime use getDistance() make sure to add the offset
+    offsetPosition = wristEncoder.getAbsolutePosition() - WristConstants.absoluteRoughMiddle;
+
+    holdPosition = wristEncoder.getDistance() + offsetPosition;
+  }
+
+  public void resetRelativeDistance(){
+    wristEncoder.reset();
   }
 
   public boolean moveWristStick(double speed){
@@ -48,20 +59,16 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     speed = speed * 0.25;
-    setpoint = speed + holdPosition;
+    setpoint = MathUtil.clamp(speed + holdPosition, WristConstants.wristLowHardStop, WristConstants.wristHighHardStop);
 
-    setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
+
+    setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance() + offsetPosition, setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
     if(speed != 0)
-      holdPosition = wristEncoder.getDistance();
+      holdPosition = wristEncoder.getDistance() + offsetPosition;
     
-    if(wristEncoder.getDistance() > WristConstants.wristLowHardStop && wristEncoder.getDistance() < WristConstants.wristHighHardStop){
-      wristMotor.set(setPower);
-    }else{
-      setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), WristConstants.wristRoughMiddle), -WristConstants.wristReturnSpeed, WristConstants.wristReturnSpeed);
-      wristMotor.set(setPower);
-    }
+    wristMotor.set(setPower);
 
-    if(wristEncoder.getDistance() > holdPosition - AutoConstants.wristTolerance && wristEncoder.getDistance() < holdPosition + AutoConstants.wristTolerance){
+    if(wristEncoder.getDistance() + offsetPosition > holdPosition - AutoConstants.wristTolerance && wristEncoder.getDistance() + offsetPosition < holdPosition + AutoConstants.wristTolerance){
       return true;
     }
 
@@ -72,11 +79,11 @@ public class WristSubsystem extends SubsystemBase {
     setpoint = position;
     holdPosition = position;
 
-    setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance(), setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
+    setPower = MathUtil.clamp(pid.calculate(wristEncoder.getDistance() + offsetPosition, setpoint), -WristConstants.wristSpeed, WristConstants.wristSpeed);
 
     wristMotor.set(setPower);
 
-    if(wristEncoder.getDistance() > holdPosition - AutoConstants.wristTolerance && wristEncoder.getDistance() < holdPosition + AutoConstants.wristTolerance){
+    if(wristEncoder.getDistance() + offsetPosition > holdPosition - AutoConstants.wristTolerance && wristEncoder.getDistance() + offsetPosition < holdPosition + AutoConstants.wristTolerance){
       return true;
     }
 
@@ -88,7 +95,7 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public double getWristEncoder(){
-    return wristEncoder.getDistance();
+    return wristEncoder.getDistance() + offsetPosition;
   }
 
   @Override
@@ -97,6 +104,9 @@ public class WristSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Wrist PID Output: ", setPower);
     SmartDashboard.putNumber("Wrist Speed: ", wristMotor.get());
     SmartDashboard.putNumber("Wrist Hold Distance: ", holdPosition);
+    SmartDashboard.putNumber("Wrist absolute position: ", wristEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Offset with getDistance: ", wristEncoder.getDistance() + offsetPosition);
+    SmartDashboard.putNumber("Get distance ", wristEncoder.getDistance());
     // This method will be called once per scheduler run
   }
 

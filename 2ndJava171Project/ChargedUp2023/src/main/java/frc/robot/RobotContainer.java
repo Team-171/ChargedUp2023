@@ -61,6 +61,11 @@ public class RobotContainer {
     wristSubsystem.setDefaultCommand(
       new WristCommand(wristSubsystem, () -> 0));
 
+    // // temp for calibrating presets
+    // armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem, () -> operatorController.getLeftY()));
+
+    // wristSubsystem.setDefaultCommand(new WristCommand(wristSubsystem, () -> operatorController.getRightY()));
+
     // Change the objects to Commands
     autoChooser = new SendableChooser<>();
     autoChooser.addOption("Forward Auto", Autos.driveForwardAuto(driveSubsystem));
@@ -89,7 +94,7 @@ public class RobotContainer {
     operatorController.x().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion));
     operatorController.pov(90).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
     operatorController.pov(270).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
-    //operatorController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputCubeEncoderPosition, ArmConstants.inputCubeEncoderPosition));
+    operatorController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputCubeEncoderPosition, ArmConstants.inputCubeEncoderPosition));
   
     operatorController.button(DriveConstants.selectControllerbutton).or(operatorController.button(DriveConstants.startControllerButton)).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset));
 

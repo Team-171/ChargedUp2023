@@ -51,20 +51,14 @@ public class ArmSubsystem extends SubsystemBase {
       }
 
       speed = speed * 0.1;
-      setpoint = speed + holdPosition;
+      setpoint = MathUtil.clamp(speed + holdPosition, ArmConstants.armLowHardStop, ArmConstants.armHighHardStop);
 
       setPower = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), setpoint), -ArmConstants.armSpeed, ArmConstants.armSpeed);
       if(speed != 0)
         holdPosition = armEncoder.getAbsolutePosition();
       
-      if(armEncoder.getAbsolutePosition() > ArmConstants.armLowHardStop && armEncoder.getAbsolutePosition() < ArmConstants.armHighHardStop){
-        armMotor.set(setPower);
-        armMotor2.set(setPower);
-      }else{
-        setPower = -MathUtil.clamp(pid.calculate(armEncoder.getAbsolutePosition(), ArmConstants.armRoughMiddle), -ArmConstants.armReturnSpeed, ArmConstants.armReturnSpeed);
-        armMotor.set(setPower);
-        armMotor2.set(setPower);
-      }
+      armMotor.set(setPower);
+      armMotor2.set(setPower);
 
       // might not need this, but keep for now
       if(armEncoder.getAbsolutePosition() > holdPosition - AutoConstants.armTolerance && armEncoder.getAbsolutePosition() < holdPosition + AutoConstants.armTolerance){
