@@ -11,16 +11,21 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/** A command that runs the drive. */
 public class TankDriveCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final TankDriveSubsystem driveSubsystem;
+
+  // the speed to go forward
   private DoubleSupplier forward;
+
+  // the speed to turn at
   private DoubleSupplier rotation;
+  // if the robot should be in slow mode
   private boolean slowTurn;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new TankDriveCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -40,6 +45,7 @@ public class TankDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Move forward and rotate at the given speeds. Move slowly if it should be slow.
     driveSubsystem.arcadeDrive(forward.getAsDouble(), rotation.getAsDouble(), slowTurn);
 
     SmartDashboard.putBoolean("AHRS Set Up: ", TankDriveSubsystem.setup);

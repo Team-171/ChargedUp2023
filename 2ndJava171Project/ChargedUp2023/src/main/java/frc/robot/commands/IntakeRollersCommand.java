@@ -9,13 +9,14 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeRollersSubsystem;
 
-/** An example command that uses an example subsystem. */
+/** A command to run the intake */
 public class IntakeRollersCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final IntakeRollersSubsystem intakeRollersSubsystem;
+  // speed to run the intake at
   private DoubleSupplier speed;
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new IntakeRollersCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -33,6 +34,7 @@ public class IntakeRollersCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // run the intake at the speed
     intakeRollersSubsystem.moveRoller(speed.getAsDouble());
   }
 

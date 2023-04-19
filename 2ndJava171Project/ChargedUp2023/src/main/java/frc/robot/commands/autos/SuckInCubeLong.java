@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.IntakeRollersSubsystem;
 
-/** An example command that uses an example subsystem. */
+/** A command that sucks in a cube. */
 public class SuckInCubeLong extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final IntakeRollersSubsystem rollersSubsystem;
 
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new SuckInCubeLong command.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -34,13 +34,16 @@ public class SuckInCubeLong extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // move the roller to suck in a cube
     rollersSubsystem.moveRoller(AutoConstants.intakeSpeedCubePickup);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // set the intake to 0
     rollersSubsystem.moveRoller(0);
+    // reset the intake encoder
     rollersSubsystem.reset();
   }
 

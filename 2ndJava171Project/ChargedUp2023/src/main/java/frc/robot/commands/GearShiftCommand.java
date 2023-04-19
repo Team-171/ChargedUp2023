@@ -7,13 +7,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.GearShiftSubsystem;
 
-/** An example command that uses an example subsystem. */
+/** A command to shift the gears in the motors */
 public class GearShiftCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final GearShiftSubsystem gearShiftSubsystem;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new GearShiftCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -31,6 +31,7 @@ public class GearShiftCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // toggle the ball-shifter pnematic between high gear and low gear
     gearShiftSubsystem.togglePneumatic();
   }
 
