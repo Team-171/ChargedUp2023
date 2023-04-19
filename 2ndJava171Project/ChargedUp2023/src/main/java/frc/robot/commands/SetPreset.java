@@ -9,25 +9,31 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 
-/** An example command that uses an example subsystem. */
+/** A command that sets the arm and wrist to preset values. */
 public class SetPreset extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
   private final ArmSubsystem armSubsystem;
+
+  // has the wrist reached its target
   private boolean wristFinished;
+  // has the arm reached its target
   private boolean armFinished;
 
-  private double armPosition;
+  // preset value for the wrist
   private double wristPosition;
+  //preset value for the arm
+  private double armPosition;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new SetPreset command.
    *
    * @param subsystem The subsystem used by this command.
    */
   public SetPreset(WristSubsystem subsystem, ArmSubsystem armSubsystem, double wristPosition, double armPosition) {
     wristSubsystem = subsystem;
     this.armSubsystem = armSubsystem;
+    // set the targets equal to the passed values
     this.armPosition = armPosition;
     this.wristPosition = wristPosition;
 
@@ -43,7 +49,9 @@ public class SetPreset extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Move the arm to the target. Return true if it has reached the target.
     armFinished = armSubsystem.moveArmButton(armPosition);
+    // Move the wrist to the target. Return true if it has reached the target.
     wristFinished = wristSubsystem.moveWristButton(wristPosition);
 }
 
@@ -55,6 +63,7 @@ public class SetPreset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // if the arm and the wrist have reached their respective targets
     if(armFinished && wristFinished)
       return true;
     return false;

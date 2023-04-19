@@ -9,12 +9,12 @@ import frc.robot.subsystems.TankDriveSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/** A command to callibrate the gyro */
 public class Calibrate extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final TankDriveSubsystem driveSubsystem;
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new Calibrate command.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -32,6 +32,7 @@ public class Calibrate extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // calibrate the gyro
     driveSubsystem.setup();
 
     SmartDashboard.putBoolean("AHRS Set Up: ", TankDriveSubsystem.setup);

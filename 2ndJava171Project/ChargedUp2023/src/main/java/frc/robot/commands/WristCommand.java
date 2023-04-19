@@ -11,10 +11,12 @@ import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-/** An example command that uses an example subsystem. */
+/** A command that moves the wrist */
 public class WristCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
+  
+  // speed to move the wrist at
   private DoubleSupplier speed;
 
   /**
@@ -37,6 +39,7 @@ public class WristCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Move the wrist manually
     wristSubsystem.moveWristStick(speed.getAsDouble());
 
     SmartDashboard.putNumber("Wrist Encoder Distance: ", wristSubsystem.getWristEncoder());
