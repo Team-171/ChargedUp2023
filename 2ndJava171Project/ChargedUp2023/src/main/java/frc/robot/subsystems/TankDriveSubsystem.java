@@ -141,7 +141,7 @@ public class TankDriveSubsystem extends SubsystemBase {
 
   public boolean driveForward(double length, boolean slowMode){
     if(slowMode){
-      forwardMultiplier = DriveConstants.slowForward;
+      forwardMultiplier = AutoConstants.driveSlowlyMultiplier;
     }
 
     SmartDashboard.putNumber("Left Encoder:" , leftLeadMotor.getEncoder().getPosition());
@@ -207,6 +207,7 @@ public class TankDriveSubsystem extends SubsystemBase {
    
     SmartDashboard.putNumber("Left Drive Speed: ", leftLeadMotor.get());
     SmartDashboard.putNumber("Right Drive Speed: ", rightLeadMotor.get());
+    SmartDashboard.putNumber("Left Encoder:" , leftLeadMotor.getEncoder().getPosition());
 
     SmartDashboard.putNumber("Gyro Pitch: ", ahrs.getPitch());
     SmartDashboard.putNumber("Gyro Roll: ", ahrs.getRoll());

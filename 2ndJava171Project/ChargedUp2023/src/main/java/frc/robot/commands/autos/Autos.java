@@ -31,8 +31,8 @@ public final class Autos {
     return new TestBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }
 
-  public static CommandBase doubleConeAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
-    return new DoubleConeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
+  public static CommandBase doubleCubeAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
+    return new DoubleCubeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }
 
   private Autos() {

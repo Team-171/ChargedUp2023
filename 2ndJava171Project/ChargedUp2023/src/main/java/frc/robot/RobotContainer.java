@@ -61,17 +61,17 @@ public class RobotContainer {
     wristSubsystem.setDefaultCommand(
       new WristCommand(wristSubsystem, () -> 0));
 
-    // // temp for calibrating presets
+    // temp for calibrating presets
     // armSubsystem.setDefaultCommand(new ArmCommand(armSubsystem, () -> operatorController.getLeftY()));
 
     // wristSubsystem.setDefaultCommand(new WristCommand(wristSubsystem, () -> operatorController.getRightY()));
 
     // Change the objects to Commands
     autoChooser = new SendableChooser<>();
-    autoChooser.addOption("Forward Auto", Autos.driveForwardAuto(driveSubsystem));
+    //autoChooser.addOption("Forward Auto", Autos.driveForwardAuto(driveSubsystem));
     autoChooser.addOption("Balance Auto", Autos.balanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     autoChooser.addOption("21 Point Balance Auto", Autos.testBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
-    autoChooser.addOption("Double Cone Auto", Autos.doubleConeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
+    autoChooser.addOption("Double Cube Auto", Autos.doubleCubeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     autoChooser.setDefaultOption("Simple Auto", Autos.simpleAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     SmartDashboard.putData(autoChooser);
     
@@ -91,9 +91,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     operatorController.a().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.conePickupEncoderPosition, ArmConstants.conePickupEncoderPosition));
-    operatorController.x().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion));
-    operatorController.pov(90).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
-    operatorController.pov(270).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
+    //operatorController.x().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion));
+    operatorController.b().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
     operatorController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputCubeEncoderPosition, ArmConstants.inputCubeEncoderPosition));
   
     operatorController.button(DriveConstants.selectControllerbutton).or(operatorController.button(DriveConstants.startControllerButton)).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset));
@@ -101,11 +100,12 @@ public class RobotContainer {
     driverController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition));
     driverController.b().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputConeEncoderPosition, ArmConstants.inputConeEncoderPosition));
     driverController.a().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe));
+    driverController.button(DriveConstants.startControllerButton).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion));
+    driverController.pov(0).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
 
     driverController.rightBumper().onTrue(new GearShiftCommand(gearShiftSubsystem));
     driverController.x().whileTrue(new BalanceCommand(driveSubsystem));
     driverController.leftBumper().whileTrue(new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX(), true));
-
   }
 
   

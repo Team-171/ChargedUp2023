@@ -47,12 +47,12 @@ public final class Constants {
     public static final double wristPIDkd = 0.1;
     public static final double wristDeadZone = 0.1;
     public static final double wristRoughMiddle = 0.24;
-    public static final double wristLowHardStop = -0.8;
+    public static final double wristLowHardStop = -0.7;
     public static final double wristHighHardStop = 0.2;
     public static final double wristSpeed = 0.75;
     public static final double wristReturnSpeed = 0.25;
     public static final double conePickupEncoderPosition = 0.16;
-    public static final double thirdLevelEncoderPosition = -0.48;
+    public static final double thirdLevelEncoderPosition = -0.55;
     public static final double cubePickupEncoderPosition = 0.07;
     public static final double secondLevelEncoderPosition = -0.45;
     public static final double inputConeEncoderPosition = -0.42;
@@ -94,7 +94,7 @@ public final class Constants {
     public static final double armSpeed = 0.5;
     public static final double armReturnSpeed = 0.25;
     public static final double conePickupEncoderPosition = 0.21;
-    public static final double thirdLevelEncoderPosition = 0.555;
+    public static final double thirdLevelEncoderPosition = 0.58;
     public static final double cubePickupEncoderPostion = 0.195;
     public static final double secondLevelEncoderPosition = 0.57;
     public static final double inputConeEncoderPosition = 0.55;
@@ -106,7 +106,7 @@ public final class Constants {
 
   public static class PneumaticConstants {
     public static final double minPressure = 40;
-    public static final double maxPressure = 110;
+    public static final double maxPressure = 90;
     public static final int forwardChannel = 0;
     public static final int reverseChannel = 1;
     public static final int moduleID = 1; 
@@ -116,17 +116,19 @@ public final class Constants {
     //Multiply wanted inches by conversion factor (0.7854166666666673)
 
     public static final double startingPosition = 0;
-    public static final double distanceForward = 179; //140
+    public static final double distanceForward = 172; //
     public static final double balanceDistanceForward = 115; //90
-    public static final double slowBalanceDistance = 115; //90
-    public static final double crossLineDistance = 185; //145
-    public static final double backDistance = 150; //118
-    public static final double secondConeDistance = 243; //189
+    public static final double slowBalanceDistance = 83; //65
+    public static final double crossLineDistance = 170; //145
+    public static final double backDistance = 78; //60.5
+    public static final double secondCubeDistance = 180; //195
     public static final double armTolerance = 0.02;
     public static final double wristTolerance = 0.02;
-    public static final double driveTolerance = 0.025;
+    public static final double driveTolerance = 5.0;
     public static final double driveForwardSpeed = 0.75;
     public static final double driveBackwardSpeed = 0.5;
+    public static final double driveSlowlyMultiplier = 0.75;
+    public static final double intakeSpeedCubePickup = 0.3;
     public static final double grabConeDistance = 9;
     public static final double clearFlushForTurnDistance = 7.64; // 6 inches
     public static final double turnToleranceForYaw = 1.0;

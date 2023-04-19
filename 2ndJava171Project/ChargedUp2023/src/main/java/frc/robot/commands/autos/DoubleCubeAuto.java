@@ -11,7 +11,7 @@ import frc.robot.commands.*;
 
 
 /** An example command that uses an example subsystem. */
-public class DoubleConeAuto extends SequentialCommandGroup {
+public class DoubleCubeAuto extends SequentialCommandGroup {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   /**
@@ -19,33 +19,39 @@ public class DoubleConeAuto extends SequentialCommandGroup {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DoubleConeAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
+  public DoubleCubeAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
     addCommands(
+      // suck in cone
         new SuckInCone(rollersSubsystem),
+        // go to shoot position third level
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
+        // shoot
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem), 
           new SpitOutCone(rollersSubsystem)),
-        new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
+        // go to cube pickup position
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
+        // drive forward and pick up cube
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
-          new DriveForwardAuto(driveSubsystem, AutoConstants.secondConeDistance, false)),
-        // gonna pick up a cube from the ground for safety
-        new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion),
-        new SuckInCone(rollersSubsystem),
-        new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
+          new SuckInCubeLong(rollersSubsystem),
+          new DriveForwardAuto(driveSubsystem, AutoConstants.secondCubeDistance, false)),
+        // drive back to start
         new ParallelRaceGroup(
             new HoldPosition(wristSubsystem, armSubsystem),
             new DriveForwardAuto(driveSubsystem, AutoConstants.startingPosition, false)),
-        new SuckInCone(rollersSubsystem),
+        // go to second level preset
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition),
+        // spit cube out on second level
         new ParallelRaceGroup(
             new HoldPosition(wristSubsystem, armSubsystem),
-            new SpitOutCone(rollersSubsystem)),
-        new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe),
-        new ParallelRaceGroup(
-            new HoldPosition(wristSubsystem, armSubsystem),
-            new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward, false))
+            new SpitOutCube(rollersSubsystem)),
+        // go to safe position
+        new SetPreset(wristSubsystem, armSubsystem, WristConstants.safe, ArmConstants.safe)
+        // drive across the line
+        // new ParallelRaceGroup(
+        //     new HoldPosition(wristSubsystem, armSubsystem),
+        //     new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward, false))
     );
     
   }

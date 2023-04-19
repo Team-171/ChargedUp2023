@@ -5,6 +5,7 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.IntakeRollersSubsystem;
 
 /** An example command that uses an example subsystem. */
@@ -33,7 +34,7 @@ public class SuckInCubeLong extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    rollersSubsystem.moveRoller(.5);
+    rollersSubsystem.moveRoller(AutoConstants.intakeSpeedCubePickup);
   }
 
   // Called once the command ends or is interrupted.

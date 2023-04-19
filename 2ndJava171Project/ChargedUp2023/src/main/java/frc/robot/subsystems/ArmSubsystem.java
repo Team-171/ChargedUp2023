@@ -98,6 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm PID Output: ", setPower);
     SmartDashboard.putNumber("Both Arm Motor Speed: ", armMotor.get());
     SmartDashboard.putNumber("Arm Hold Position: ", holdPosition);
+    SmartDashboard.putNumber("Arm Encoder", armEncoder.getAbsolutePosition());
   }
 
   @Override
