@@ -20,7 +20,7 @@ public class DoubleCubeAuto extends SequentialCommandGroup {
    * @param subsystem The subsystem used by this command.
    */
   public DoubleCubeAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
-    addCommands(
+    addCommands( 
       // suck in cone
         new SuckInCone(rollersSubsystem),
         // go to shoot position third level

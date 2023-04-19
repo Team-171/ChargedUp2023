@@ -28,6 +28,7 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem;
   private final GearShiftSubsystem gearShiftSubsystem;
 
+  // Initialize autonomous chooser for SmartDashboard
   private SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -39,7 +40,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // establish the driving subsystem
+    // establish the subsystems
     driveSubsystem = new TankDriveSubsystem();
     wristSubsystem = new WristSubsystem();
     rollersSubsystem = new IntakeRollersSubsystem();
@@ -66,9 +67,8 @@ public class RobotContainer {
 
     // wristSubsystem.setDefaultCommand(new WristCommand(wristSubsystem, () -> operatorController.getRightY()));
 
-    // Change the objects to Commands
+    // Sets up autonomous chooser in SmartDashboard
     autoChooser = new SendableChooser<>();
-    //autoChooser.addOption("Forward Auto", Autos.driveForwardAuto(driveSubsystem));
     autoChooser.addOption("Balance Auto", Autos.balanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     autoChooser.addOption("21 Point Balance Auto", Autos.testBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
     autoChooser.addOption("Double Cube Auto", Autos.doubleCubeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem));
@@ -90,8 +90,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // Sets the wrist and arm configuration based on a button from the controller
     operatorController.a().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.conePickupEncoderPosition, ArmConstants.conePickupEncoderPosition));
-    //operatorController.x().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion));
     operatorController.b().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
     operatorController.y().whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.inputCubeEncoderPosition, ArmConstants.inputCubeEncoderPosition));
   
@@ -103,8 +103,13 @@ public class RobotContainer {
     driverController.button(DriveConstants.startControllerButton).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.cubePickupEncoderPosition, ArmConstants.cubePickupEncoderPostion));
     driverController.pov(0).whileTrue(new SetPreset(wristSubsystem, armSubsystem, WristConstants.secondLevelEncoderPosition, ArmConstants.secondLevelEncoderPosition));
 
+    // Changes gear on right bumper
     driverController.rightBumper().onTrue(new GearShiftCommand(gearShiftSubsystem));
+
+    // Auto balances robot
     driverController.x().whileTrue(new BalanceCommand(driveSubsystem));
+
+    // Slows down drive speed
     driverController.leftBumper().whileTrue(new TankDriveCommand(driveSubsystem, () -> -driverController.getLeftY(), () -> -driverController.getRightX(), true));
   }
 
@@ -115,7 +120,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
+    // Gets selected auto and sends it to Robot.java to run
     return autoChooser.getSelected();
   }
 }

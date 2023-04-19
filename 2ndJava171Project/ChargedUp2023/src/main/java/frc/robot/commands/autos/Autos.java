@@ -13,24 +13,29 @@ import frc.robot.Constants.AutoConstants;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public final class Autos {
+  // Options for autos
 
-  /** Example static factory for an autonomous command. */
+  // Drive forward a set distance
   public static CommandBase driveForwardAuto(TankDriveSubsystem driveSubsystem) {
     return new DriveForwardAuto(driveSubsystem, AutoConstants.distanceForward, false);
   }
 
+  // Places a cone on the top row and drives past the community line
   public static CommandBase simpleAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
     return new SimpleAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }
 
+  // Places a cone on the top row and balances on the charge station
   public static CommandBase balanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
     return new BalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }
 
+  // Places a cone on the top row, drives over the charge station out of the community, back onto the charge station and balances
   public static CommandBase testBalanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
     return new TestBalanceAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }
 
+  // Places a cube on the top row, drives out of the community and picks another up, and places that one on the second level
   public static CommandBase doubleCubeAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem){
     return new DoubleCubeAuto(driveSubsystem, wristSubsystem, armSubsystem, rollersSubsystem);
   }

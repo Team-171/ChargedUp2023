@@ -9,28 +9,30 @@ import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 
-
-/** An example command that uses an example subsystem. */
+/**
+ * Creates a balance auto
+ */
 public class BalanceAuto extends SequentialCommandGroup {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
   public BalanceAuto(TankDriveSubsystem driveSubsystem, WristSubsystem wristSubsystem, ArmSubsystem armSubsystem, IntakeRollersSubsystem rollersSubsystem) {
     addCommands(
+      // Suck in cone
         new SuckInCone(rollersSubsystem),
+      // Sets arm & wrist to third level position
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.thirdLevelEncoderPosition, ArmConstants.thirdLevelEncoderPosition),
+      // Holds the arm & wrist and spits out the cone
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem), 
           new SpitOutCone(rollersSubsystem)),
+      // Goes into reset position for arm & wrist
         new SetPreset(wristSubsystem, armSubsystem, WristConstants.reset, ArmConstants.reset),
+      // Holds arm & wrist position and drives forward a set distance
         new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
           new DriveForwardAuto(driveSubsystem, AutoConstants.balanceDistanceForward, false)),
-        new ParallelRaceGroup(
+      // Holds arm & wrist position and balances on the charge station
+          new ParallelRaceGroup(
           new HoldPosition(wristSubsystem, armSubsystem),
           new BalanceCommand(driveSubsystem)
         )

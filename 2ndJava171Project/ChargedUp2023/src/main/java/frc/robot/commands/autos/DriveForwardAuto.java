@@ -8,18 +8,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TankDriveSubsystem;
 
 
-/** An example command that uses an example subsystem. */
 public class DriveForwardAuto extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final TankDriveSubsystem driveSubsystem;
+  // Distance to drive forward
   private double distance;
+  // If the robot reached the distance
   private boolean finished;
+  // If the robot should drive slow
   private boolean slow;
 
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * Creates the drive forward auto
+   * Drives forward a set distance
+   * @param distance double The distance to drive
+   * @param slow boolean If the robot should drive slower
    */
   public DriveForwardAuto(TankDriveSubsystem subsystem, double distance, boolean slow) {
     driveSubsystem = subsystem;
@@ -37,12 +40,14 @@ public class DriveForwardAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Drives forward and returns if it reached the destination
     finished = driveSubsystem.driveForward(distance, slow);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // When the robot is at the destination, set the speed to 0
     driveSubsystem.arcadeDrive(0, 0, false);
   }
 

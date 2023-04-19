@@ -14,27 +14,42 @@ import edu.wpi.first.math.MathUtil;
 
 
 public class IntakeRollersSubsystem extends SubsystemBase {
-
+  // Initialization of variables
   CANSparkMax rollersMotor;
   PIDController pid;
   double setDistance;
   double holdPosition;
 
-  /** Creates a new ExampleSubsystem. */
+  /** 
+   * Creates a new IntakeRollersSubsystem.
+   * Controls speed of intake rollers 
+  */
   public IntakeRollersSubsystem() {
+    // Creates a roller for intake
     rollersMotor = new CANSparkMax(RollerConstants.rollerMotorID, MotorType.kBrushless);
 
+    // Resets to default, always do before changing config
     rollersMotor.restoreFactoryDefaults();
+
+    // Gets the built in encoder and resets it
     rollersMotor.getEncoder().setPosition(0);
 
+    // Sets up pid so the piece doesn't fall out
     pid = new PIDController(RollerConstants.rollerPIDkp, RollerConstants.rollerPIDki, RollerConstants.rollerPIDkd);
   }
 
+  /**
+   * Moves the roller based on an axis, in this case, triggers
+   * @param speed double Input from triggers / axis
+   */
   public void moveRoller(double speed){
+    // Deadzone
     if(Math.abs(speed) < RollerConstants.rollerDeadZone) {
       speed = 0;
     }
 
+    // Set speed and reset encoder
+    // If not moving, try to get back to what it was when it stopped moving
     if(speed != 0){
       rollersMotor.set(speed);
       rollersMotor.getEncoder().setPosition(0);
@@ -43,6 +58,9 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Resets the encoder in the motor
+   */
   public void reset(){
     rollersMotor.getEncoder().setPosition(0);
   }

@@ -14,21 +14,31 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class GearShiftSubsystem extends SubsystemBase {
-
+  // Initialization of variables
   DoubleSolenoid solenoid;
   Compressor compressor;
 
   
-  /** Creates a new ExampleSubsystem. */
+  /** 
+   * Creates a new GearShiftSubsystem.
+   * Used to shift gears 
+  */
   public GearShiftSubsystem() {
+    // Creates a double solenoid to shift between low and high gear
     solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticConstants.forwardChannel, PneumaticConstants.reverseChannel);
+    
+    // Sets the drive to low gear
     solenoid.set(Value.kReverse);
 
+    // Creates and enables the pneumatic compressor
     compressor = new Compressor(PneumaticConstants.moduleID,PneumaticsModuleType.REVPH);
     compressor.enableAnalog(PneumaticConstants.minPressure, PneumaticConstants.maxPressure);
 
   }
 
+  /**
+   * Toggles from low to high gear
+   */
   public void togglePneumatic(){
      solenoid.toggle();
      SmartDashboard.putString("Solenoid: ", solenoid.get().name());
@@ -36,8 +46,10 @@ public class GearShiftSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // SmartDashboard posting
+    // Put SmartDashboard in periodic so the output is always working even when the robot is disabled
+
     SmartDashboard.putNumber("Compressor Pressure: ", compressor.getPressure());
-    // This method will be called once per scheduler run
   }
 
   @Override

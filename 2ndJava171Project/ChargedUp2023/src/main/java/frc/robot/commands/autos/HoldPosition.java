@@ -9,16 +9,14 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 
-/** An example command that uses an example subsystem. */
 public class HoldPosition extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final WristSubsystem wristSubsystem;
   private final ArmSubsystem armSubsystem;
 
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * Creates the hold position command
+   * Holds the arm and wrist at the current position
    */
   public HoldPosition(WristSubsystem subsystem, ArmSubsystem armSubsystem) {
     wristSubsystem = subsystem;
@@ -36,6 +34,7 @@ public class HoldPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Holds the arm and wrist where they are at
     armSubsystem.moveArmStick(0);
     wristSubsystem.moveWristStick(0);
 }
